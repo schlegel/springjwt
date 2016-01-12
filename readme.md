@@ -1,4 +1,4 @@
-# REST with Spring Security and HWT
+# REST with Spring Boot, JPA and JWT Security
 
 ## Spring Boot Application
 
