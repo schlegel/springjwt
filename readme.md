@@ -4,10 +4,11 @@
 
 You can run a Spring Boot application with embedded tomcat or provided tomcat.
 
-1. Run Application.class with Maven profile inMemory
-2. Deploy the war file with Maven profile inMemory-provided-tomcat
+1. Run Application.class with Maven profile inMemory - Includes an embedded Tomcat
+2. Deploy the war file with Maven profile inMemory-provided-tomcat (mvn package -P inMemory-provided-tomcat) - Excludes an embedded Tomcat
 
 There exists also a prepared mysql profile which allows the connection to a provided mysql database instead of the in memory database.
+
 
 ## REST Endpoints:
 
