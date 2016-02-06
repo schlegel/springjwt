@@ -44,7 +44,7 @@ public class PermissionManager implements PermissionEvaluator {
 
         if(permissionEvaluatorMap.containsKey(targetType)) {
             if((targetId == null ||targetId instanceof UUID) && permission instanceof String) {
-                return permissionEvaluatorMap.get(targetType).hasPermission((UUID)targetId, (String) permission, roles, authentication.getName());
+                return permissionEvaluatorMap.get(targetType).hasPermission((UUID)targetId, (String) permission, roles, authentication.getName(), authentication);
             } else {
                 throw new IllegalArgumentException("Wrong object types for permission or targetId");
             }

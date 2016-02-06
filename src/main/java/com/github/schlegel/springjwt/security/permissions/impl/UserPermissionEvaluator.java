@@ -2,6 +2,7 @@ package com.github.schlegel.springjwt.security.permissions.impl;
 
 import com.github.schlegel.springjwt.security.AuthoritiesConstants;
 import com.github.schlegel.springjwt.security.permissions.DomainPermissionEvaluator;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public class UserPermissionEvaluator implements DomainPermissionEvaluator {
     }
 
     @Override
-    public boolean hasPermission(UUID targetId, String permission, List<String> roles, String user) {
+    public boolean hasPermission(UUID targetId, String permission, List<String> roles, String user, Authentication authentication) {
         if(roles.contains(AuthoritiesConstants.SUPER_ADMIN)) {
             return true;
         }
