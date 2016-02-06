@@ -1,15 +1,15 @@
-package com.github.schlegel.springjwt.validation.dto;
+package com.github.schlegel.springjwt.validation.transport;
 
 /**
  * Created by sebastianbayerl on 06/02/16.
  */
-public class FieldErrorDTO {
+public class FieldErrorOutputDto {
 
     private String field;
 
     private String message;
 
-    public FieldErrorDTO(String field, String message) {
+    public FieldErrorOutputDto(String field, String message) {
         this.field = field;
         this.message = message;
     }

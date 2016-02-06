@@ -1,49 +1,24 @@
 package com.github.schlegel.springjwt.service.company;
 
 import com.github.schlegel.springjwt.domain.company.Company;
-import com.github.schlegel.springjwt.domain.company.CompanyRepository;
-import com.github.schlegel.springjwt.domain.user.User;
-import com.github.schlegel.springjwt.domain.user.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
+import com.github.schlegel.springjwt.service.company.transport.CompanyInputDto;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 
-@Service
-public class CompanyService implements ICompanyService {
+import javax.transaction.Transactional;
+import javax.validation.Valid;
+import java.util.UUID;
 
-    @Autowired
-    private CompanyDTOMapper companyDTOMapper;
+@Transactional
+@Validated
+public interface CompanyService {
 
-    @Autowired
-    private CompanyRepository companyRepository;
+    @PreAuthorize("hasPermission(#companyId, 'company', 'create')")
+    Company createCompany(@Valid CompanyInputDto companyInputDto);
 
-    @Autowired
-    private UserRepository userRepository;
+    @PreAuthorize("hasPermission(#companyId, 'company', 'update')")
+    Company editCompany(UUID companyId, @Valid CompanyInputDto companyInputDto);
 
-    @Override
-    public Company createCompany(CompanyDTO companyDTO) {
-        Company company = companyDTOMapper.companyDTOtoCompany(companyDTO);
-        companyRepository.save(company);
-        return company;
-    }
-
-    @Override
-    public Company editCompany(String companyId, CompanyDTO companyDTO) {
-        Company company = companyRepository.findOne(companyId);
-        Assert.notNull(company);
-
-        return companyDTOMapper.updateCompanyFromCompanyDTO(companyDTO, company);
-    }
-
-    @Override
-    public Company addUserToCompany(String companyId, String userId) {
-        Company company = companyRepository.findOne(companyId);
-        User user = userRepository.findOne(userId);
-
-        if(!company.getUsers().stream().anyMatch(u -> u.getId().equals(userId) )) {
-            company.getUsers().add(user);
-        }
-
-        return company;
-    }
+    @PreAuthorize("hasPermission(#companyId, 'company', 'addUser')")
+    Company addUserToCompany(UUID companyId, String userId);
 }

@@ -55,7 +55,4 @@ public class Application extends SpringBootServletInitializer {
         methodValidationPostProcessor.setValidator(validator());
         return methodValidationPostProcessor;
     }
-
-
-
 }

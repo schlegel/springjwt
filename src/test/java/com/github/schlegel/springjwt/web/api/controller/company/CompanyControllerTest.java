@@ -1,17 +1,14 @@
 package com.github.schlegel.springjwt.web.api.controller.company;
 
-import com.github.schlegel.springjwt.Application;
-import com.github.schlegel.springjwt.BaseTest;
+import com.github.schlegel.springjwt.BaseWebTest;
 import com.github.schlegel.springjwt.domain.company.Company;
 import com.github.schlegel.springjwt.domain.company.CompanyRepository;
-import com.github.schlegel.springjwt.service.company.CompanyDTO;
+import com.github.schlegel.springjwt.service.company.transport.CompanyInputDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -19,21 +16,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
-@WebAppConfiguration
-public class CompanyControllerTest  extends BaseTest{
+public class CompanyControllerTest  extends BaseWebTest{
 
     @Autowired
     CompanyRepository companyRepository;
 
     @Test
     public void testCreateCompany_withRole_Superadmin_wrong_Validation() throws Exception {
-        CompanyDTO companyCreate = new CompanyDTO();
+        CompanyInputDto companyCreate = new CompanyInputDto();
         companyCreate.setName(null);
         companyCreate.setDescription("My Descrption");
         companyCreate.getMailPostfixes().add(".de");
 
-        mockMvc.perform(post("/companies").header(headerToken, authenticateUser("superadmin@example.de", "password"))
+        mockMvc.perform(post("/companies").header(headerToken, getAuthToken("superadmin@example.de", "password"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(companyCreate)))
                 .andExpect(status().isBadRequest());
@@ -41,12 +36,12 @@ public class CompanyControllerTest  extends BaseTest{
 
     @Test
     public void testCreateCompany_withRole_Superadmin() throws Exception {
-        CompanyDTO companyCreate = new CompanyDTO();
+        CompanyInputDto companyCreate = new CompanyInputDto();
         companyCreate.setName("My Company");
         companyCreate.setDescription("My Descrption");
         companyCreate.getMailPostfixes().add(".de");
 
-        mockMvc.perform(post("/companies").header(headerToken, authenticateUser("superadmin@example.de", "password"))
+        mockMvc.perform(post("/companies").header(headerToken, getAuthToken("superadmin@example.de", "password"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(companyCreate)))
                 .andExpect(status().isCreated());
@@ -54,12 +49,12 @@ public class CompanyControllerTest  extends BaseTest{
 
     @Test
     public void testCreateCompany_withRole_CompanyAdmin() throws Exception {
-        CompanyDTO companyCreate = new CompanyDTO();
+        CompanyInputDto companyCreate = new CompanyInputDto();
         companyCreate.setName("My Company");
         companyCreate.setDescription("My Description");
         //companyCreate.getMailPostfixes().add(".de");
 
-        mockMvc.perform(post("/companies").header(headerToken, authenticateUser("companyadmin@example.de", "password"))
+        mockMvc.perform(post("/companies").header(headerToken, getAuthToken("companyadmin@example.de", "password"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(companyCreate)))
                 .andExpect(status().isForbidden());
@@ -74,11 +69,11 @@ public class CompanyControllerTest  extends BaseTest{
         companyRepository.save(company);
 
         // Create Patch Company DTO
-        CompanyDTO companyUpdate = new CompanyDTO();
+        CompanyInputDto companyUpdate = new CompanyInputDto();
         companyUpdate.setName("Updated Company Name");
         companyUpdate.setDescription("Updated Description");
 
-        mockMvc.perform(patch("/companies/" + company.getId()).header(headerToken, authenticateUser("superadmin@example.de", "password"))
+        mockMvc.perform(patch("/companies/" + company.getId()).header(headerToken, getAuthToken("superadmin@example.de", "password"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(companyUpdate)))
                 .andExpect(status().isOk())
@@ -95,11 +90,11 @@ public class CompanyControllerTest  extends BaseTest{
         companyRepository.save(company);
 
         // Create Patch Company DTO
-        CompanyDTO companyUpdate = new CompanyDTO();
+        CompanyInputDto companyUpdate = new CompanyInputDto();
         companyUpdate.setName("Updated Company Name");
         companyUpdate.setDescription("Updated Description");
 
-        mockMvc.perform(patch("/companies/" + company.getId()).header(headerToken, authenticateUser("companyadmin@example.de", "password"))
+        mockMvc.perform(patch("/companies/" + company.getId()).header(headerToken, getAuthToken("companyadmin@example.de", "password"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(companyUpdate)))
                 .andExpect(status().isOk())

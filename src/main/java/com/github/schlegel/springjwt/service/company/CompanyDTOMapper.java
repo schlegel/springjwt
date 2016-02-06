@@ -1,28 +1,29 @@
 package com.github.schlegel.springjwt.service.company;
 
 import com.github.schlegel.springjwt.domain.company.Company;
+import com.github.schlegel.springjwt.service.company.transport.CompanyInputDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
-public abstract class CompanyDTOMapper {
+public abstract class CompanyDtoMapper {
 
 
-    abstract CompanyDTO companyToCompanyDTO (Company car);
+    abstract CompanyInputDto companyToCompanyDTO (Company company);
 
-    abstract Company companyDTOtoCompany (CompanyDTO companyDTO);
+    abstract Company companyDTOtoCompany (CompanyInputDto companyInputDto);
 
-    Company updateCompanyFromCompanyDTO(CompanyDTO companyDTO, @MappingTarget Company company) {
-        if ( companyDTO == null ) {
+    Company updateCompanyFromCompanyDTO(CompanyInputDto companyInputDto, @MappingTarget Company company) {
+        if ( companyInputDto == null ) {
             return null;
         }
 
-        if(companyDTO.getName() != null) {
-            company.setName( companyDTO.getName() );
+        if(companyInputDto.getName() != null) {
+            company.setName( companyInputDto.getName() );
         }
 
-        if(companyDTO.getDescription() != null) {
-            company.setDescription( companyDTO.getDescription() );
+        if(companyInputDto.getDescription() != null) {
+            company.setDescription( companyInputDto.getDescription() );
         }
 
         return company;

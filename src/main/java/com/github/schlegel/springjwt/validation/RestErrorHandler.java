@@ -1,6 +1,6 @@
 package com.github.schlegel.springjwt.validation;
 
-import com.github.schlegel.springjwt.validation.dto.ValidationErrorDTO;
+import com.github.schlegel.springjwt.validation.transport.ValidationErrorOutputDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -23,8 +23,8 @@ public class RestErrorHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ValidationErrorDTO processValidationError(MethodArgumentNotValidException ex) {
-        ValidationErrorDTO dto = new ValidationErrorDTO();
+    public ValidationErrorOutputDto processValidationError(MethodArgumentNotValidException ex) {
+        ValidationErrorOutputDto dto = new ValidationErrorOutputDto();
         BindingResult result = ex.getBindingResult();
 
 
@@ -44,8 +44,8 @@ public class RestErrorHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ValidationErrorDTO processValidationError(ConstraintViolationException ex) {
-        ValidationErrorDTO dto = new ValidationErrorDTO();
+    public ValidationErrorOutputDto processValidationError(ConstraintViolationException ex) {
+        ValidationErrorOutputDto dto = new ValidationErrorOutputDto();
         Set<? extends ConstraintViolation<?>> result = ex.getConstraintViolations();
 
         for (ConstraintViolation<?> violation : result) {

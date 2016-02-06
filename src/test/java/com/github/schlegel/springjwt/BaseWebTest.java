@@ -7,6 +7,8 @@ import com.github.schlegel.springjwt.security.jwt.service.AuthenticationServiceU
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -15,7 +17,9 @@ import javax.servlet.Filter;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
-public class BaseTest {
+@SpringApplicationConfiguration(classes = Application.class)
+@WebAppConfiguration
+public class BaseWebTest {
 
     @Autowired
     private WebApplicationContext context;
@@ -46,9 +50,7 @@ public class BaseTest {
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
-    protected String authenticateUser(String email, String password) throws Exception {
+    protected String getAuthToken(String email, String password) throws Exception {
         return authenticationServiceUsernamePassword.authenticate(email, password).serialize();
     }
-
-
 }
