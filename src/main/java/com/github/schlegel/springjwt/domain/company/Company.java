@@ -2,34 +2,59 @@ package com.github.schlegel.springjwt.domain.company;
 
 import com.github.schlegel.springjwt.domain.user.User;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+import org.joda.time.DateTime;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import java.util.LinkedList;
-import java.util.List;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 @Entity
 public class Company {
 
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    private String id;
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    @Column(name = "ID")
+    private UUID id;
 
+    @Column(nullable = false, unique = true)
     private String name;
+
+    @Column(nullable = false)
+    private String address;
 
     private String description;
 
-    @OneToMany(mappedBy = "company")
-    private List<User> users = new LinkedList<>();
+    private String mainContact;
 
-    public String getId() {
+    @ElementCollection
+    @CollectionTable(joinColumns = @JoinColumn(name = "COMPANY_ID") )
+    private Set<String> mailPostfixes;
+
+    @Column(nullable = false)
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    private DateTime createdAt;
+
+    @Column(nullable = false)
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    private DateTime updatedAt;
+
+    @Column(nullable = false)
+    private boolean verified;
+
+    @Column(nullable = false)
+    private boolean active;
+
+    @OneToMany(mappedBy = "company")
+    private Set<User> users = new HashSet<>();
+
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -41,6 +66,14 @@ public class Company {
         this.name = name;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -49,11 +82,59 @@ public class Company {
         this.description = description;
     }
 
-    public List<User> getUsers() {
+    public String getMainContact() {
+        return mainContact;
+    }
+
+    public void setMainContact(String mainContact) {
+        this.mainContact = mainContact;
+    }
+
+    public Set<String> getMailPostfixes() {
+        return mailPostfixes;
+    }
+
+    public void setMailPostfixes(Set<String> mailPostfixes) {
+        this.mailPostfixes = mailPostfixes;
+    }
+
+    public DateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(DateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public DateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(DateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public boolean isVerified() {
+        return verified;
+    }
+
+    public void setVerified(boolean verified) {
+        this.verified = verified;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public Set<User> getUsers() {
         return users;
     }
 
-    public void setUsers(List<User> users) {
+    public void setUsers(Set<User> users) {
         this.users = users;
     }
 }

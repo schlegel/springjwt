@@ -72,6 +72,22 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- Joda time -->
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>joda-time</groupId>-->
+            <!--<artifactId>joda-time-hibernate</artifactId>-->
+            <!--<version>1.4</version>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>org.jadira.usertype</groupId>
+            <artifactId>usertype.core</artifactId>
+            <version>5.0.0.GA</version>
+        </dependency>
+
         <!-- Test environment -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

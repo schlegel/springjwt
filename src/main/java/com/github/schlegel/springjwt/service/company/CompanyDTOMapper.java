@@ -7,7 +7,7 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface CompanyDTOMapper {
 
-    CompanyDTO companyToCompanyDTO (Company car);
+    CompanyDTO companyToCompanyDTO (Company company);
 
     Company companyDTOtoCompany (CompanyDTO companyDTO);
 

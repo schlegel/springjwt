@@ -6,11 +6,9 @@ import com.github.schlegel.springjwt.domain.user.User;
 import com.github.schlegel.springjwt.domain.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 @Service
-@Transactional
 public class CompanyService implements ICompanyService {
     @Autowired
     CompanyDTOMapper companyDTOMapper;
@@ -22,6 +20,7 @@ public class CompanyService implements ICompanyService {
     UserRepository userRepository;
 
     @Override
+    @Validated
     public Company createCompany(CompanyDTO companyDTO) {
         Company company = companyDTOMapper.companyDTOtoCompany(companyDTO);
         companyRepository.save(company);
