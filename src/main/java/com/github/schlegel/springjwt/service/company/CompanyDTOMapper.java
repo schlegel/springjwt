@@ -5,11 +5,26 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
-public interface CompanyDTOMapper {
+public abstract class CompanyDTOMapper {
 
-    CompanyDTO companyToCompanyDTO (Company car);
 
-    Company companyDTOtoCompany (CompanyDTO companyDTO);
+    abstract CompanyDTO companyToCompanyDTO (Company car);
 
-    Company updateCompanyFromCompanyDTO (CompanyDTO companyDTO, @MappingTarget Company company);
+    abstract Company companyDTOtoCompany (CompanyDTO companyDTO);
+
+    Company updateCompanyFromCompanyDTO(CompanyDTO companyDTO, @MappingTarget Company company) {
+        if ( companyDTO == null ) {
+            return null;
+        }
+
+        if(companyDTO.getName() != null) {
+            company.setName( companyDTO.getName() );
+        }
+
+        if(companyDTO.getDescription() != null) {
+            company.setDescription( companyDTO.getDescription() );
+        }
+
+        return company;
+    }
 }

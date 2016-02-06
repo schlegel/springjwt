@@ -6,6 +6,7 @@ import com.github.schlegel.springjwt.domain.user.User;
 import com.github.schlegel.springjwt.domain.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
 
@@ -30,8 +31,10 @@ public class CompanyService implements ICompanyService {
 
     @Override
     public Company editCompany(String companyId, CompanyDTO companyDTO) {
-        //TODO
-        return null;
+        Company company = companyRepository.findOne(companyId);
+        Assert.notNull(company);
+
+        return companyDTOMapper.updateCompanyFromCompanyDTO(companyDTO, company);
     }
 
     @Override
