@@ -15,7 +15,7 @@ public interface ICompanyService {
     Company createCompany(@Valid CompanyDTO companyDTO);
 
     @PreAuthorize("hasPermission(#companyId, 'company', 'update')")
-    Company editCompany(String companyId, CompanyDTO companyDTO);
+    Company editCompany(String companyId, @Valid CompanyDTO companyDTO);
 
     @PreAuthorize("hasPermission(#companyId, 'company', 'addUser')")
     Company addUserToCompany(String companyId, String userId);

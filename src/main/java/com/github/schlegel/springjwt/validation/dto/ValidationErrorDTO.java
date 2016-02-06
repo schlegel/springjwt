@@ -1,11 +1,8 @@
-package com.github.schlegel.springjwt.validation;
+package com.github.schlegel.springjwt.validation.dto;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by sebastianbayerl on 06/02/16.
- */
 public class ValidationErrorDTO {
 
     private List<GlobalErrorDTO> globalErrors = new ArrayList<>();
@@ -18,7 +15,7 @@ public class ValidationErrorDTO {
     }
 
     public void addGlobalError(String message) {
-        GlobalErrorDTO error = new GlobalErrorDTO();
+        GlobalErrorDTO error = new GlobalErrorDTO(message);
         globalErrors.add(error);
     }
 

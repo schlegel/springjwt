@@ -1,4 +1,4 @@
-package com.github.schlegel.springjwt.validation;
+package com.github.schlegel.springjwt.validation.dto;
 
 /**
  * Created by sebastianbayerl on 06/02/16.

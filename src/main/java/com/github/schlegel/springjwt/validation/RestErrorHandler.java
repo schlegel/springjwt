@@ -1,5 +1,6 @@
 package com.github.schlegel.springjwt.validation;
 
+import com.github.schlegel.springjwt.validation.dto.ValidationErrorDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -15,9 +16,6 @@ import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created by sebastianbayerl on 06/02/16.
- */
 @ControllerAdvice
 public class RestErrorHandler {
 

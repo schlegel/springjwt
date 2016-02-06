@@ -8,19 +8,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import javax.transaction.Transactional;
-
 @Service
-@Transactional
 public class CompanyService implements ICompanyService {
-    @Autowired
-    CompanyDTOMapper companyDTOMapper;
 
     @Autowired
-    CompanyRepository companyRepository;
+    private CompanyDTOMapper companyDTOMapper;
 
     @Autowired
-    UserRepository userRepository;
+    private CompanyRepository companyRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public Company createCompany(CompanyDTO companyDTO) {
