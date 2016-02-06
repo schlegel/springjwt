@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by sebastianbayerl on 06/02/16.
@@ -39,5 +42,27 @@ public class RestErrorHandler {
 
         return dto;
     }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ValidationErrorDTO processValidationError(ConstraintViolationException ex) {
+        ValidationErrorDTO dto = new ValidationErrorDTO();
+        Set<? extends ConstraintViolation<?>> result = ex.getConstraintViolations();
+
+        for (ConstraintViolation<?> violation : result) {
+            String field = violation.getPropertyPath().toString();
+
+            if (field == null || field.equals("")) {
+                dto.addGlobalError(violation.getMessage());
+            } else {
+                dto.addFieldError(field, violation.getMessage());
+            }
+
+        }
+
+        return dto;
+    }
+
 
 }
