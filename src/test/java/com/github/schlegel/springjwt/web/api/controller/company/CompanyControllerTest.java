@@ -31,6 +31,7 @@ public class CompanyControllerTest  extends BaseTest{
         CompanyDTO companyCreate = new CompanyDTO();
         companyCreate.setName("My Company");
         companyCreate.setDescription("My Descrption");
+        companyCreate.getMailPostfixes().add(".de");
 
         mockMvc.perform(post("/companies").header(headerToken, authenticateUser("superadmin@example.de", "password"))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -41,8 +42,9 @@ public class CompanyControllerTest  extends BaseTest{
     @Test
     public void testCreateCompany_withRole_CompanyAdmin() throws Exception {
         CompanyDTO companyCreate = new CompanyDTO();
-        companyCreate.setName("My Company");
+        companyCreate.setName(null);
         companyCreate.setDescription("My Descrption");
+        //companyCreate.getMailPostfixes().add(".de");
 
         mockMvc.perform(post("/companies").header(headerToken, authenticateUser("companyadmin@example.de", "password"))
                 .contentType(MediaType.APPLICATION_JSON)

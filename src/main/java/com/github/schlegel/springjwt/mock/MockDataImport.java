@@ -1,5 +1,6 @@
 package com.github.schlegel.springjwt.mock;
 
+import com.github.schlegel.springjwt.domain.company.Company;
 import com.github.schlegel.springjwt.domain.company.CompanyRepository;
 import com.github.schlegel.springjwt.domain.user.User;
 import com.github.schlegel.springjwt.domain.user.UserRepository;
@@ -31,6 +32,7 @@ public class MockDataImport implements ApplicationListener<ContextRefreshedEvent
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         createUsers();
+        createCompanies();
     }
 
     public void createUsers() {
@@ -67,5 +69,18 @@ public class MockDataImport implements ApplicationListener<ContextRefreshedEvent
 
         userRepository.save(superAdmin);
         logger.info("User " + superAdmin.getEmail() + " created with id " + superAdmin.getId());
+    }
+
+
+    public void createCompanies() {
+
+        Company company = new Company();
+        company.setName("comp1");
+        User user = userRepository.findByEmail("companyadmin@example.de");
+        user.setCompany(company);
+
+        companyRepository.save(company);
+        userRepository.save(user);
+
     }
 }
