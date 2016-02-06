@@ -1,11 +1,10 @@
 package com.github.schlegel.springjwt.security.spring;
 
-import com.github.schlegel.springjwt.model.User;
-import com.github.schlegel.springjwt.model.UserRepository;
+import com.github.schlegel.springjwt.domain.user.User;
+import com.github.schlegel.springjwt.domain.user.UserRepository;
+import com.github.schlegel.springjwt.domain.user.UserRole;
 import com.github.schlegel.springjwt.security.AuthoritiesConstants;
 import com.github.schlegel.springjwt.security.PrincipalUser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,8 +18,6 @@ import java.util.Collection;
 
 @Service
 public class DaoUserDetailService implements UserDetailsService {
-
-    private final Logger logger = LoggerFactory.getLogger(DaoUserDetailService.class);
 
     @Autowired
     private UserRepository userRepository;
@@ -54,16 +51,22 @@ public class DaoUserDetailService implements UserDetailsService {
     public static PrincipalUser getPrincipalUser(User user) {
         // add roles to the user
         Collection<GrantedAuthority> grantedAuthorities = new ArrayList<GrantedAuthority>();
-        grantedAuthorities.add(new SimpleGrantedAuthority(AuthoritiesConstants.ANONYMOUS));
-        grantedAuthorities.add(new SimpleGrantedAuthority(AuthoritiesConstants.USER));
 
-        // todo: check if the user is activated
-        if (true) {
-            return new PrincipalUser(user.getEmail(), user.getPassword(), user.getSalt(), grantedAuthorities,
-                    user.getId());
-        } else {
-            return new PrincipalUser(user.getEmail(), user.getPassword(), user.getSalt(), grantedAuthorities,
-                    user.getId(), false, true, true, true);
+        if(UserRole.USER.equals(user.getRole())) {
+            grantedAuthorities.add(new SimpleGrantedAuthority(AuthoritiesConstants.ANONYMOUS));
+            grantedAuthorities.add(new SimpleGrantedAuthority(AuthoritiesConstants.USER));
+        } else if(UserRole.COMPANY_ADMIN.equals(user.getRole())) {
+            grantedAuthorities.add(new SimpleGrantedAuthority(AuthoritiesConstants.ANONYMOUS));
+            grantedAuthorities.add(new SimpleGrantedAuthority(AuthoritiesConstants.USER));
+            grantedAuthorities.add(new SimpleGrantedAuthority(AuthoritiesConstants.COMPANY_ADMIN));
+        } else if(UserRole.SUPER_ADMIN.equals(user.getRole())) {
+            grantedAuthorities.add(new SimpleGrantedAuthority(AuthoritiesConstants.ANONYMOUS));
+            grantedAuthorities.add(new SimpleGrantedAuthority(AuthoritiesConstants.USER));
+            grantedAuthorities.add(new SimpleGrantedAuthority(AuthoritiesConstants.COMPANY_ADMIN));
+            grantedAuthorities.add(new SimpleGrantedAuthority(AuthoritiesConstants.SUPER_ADMIN));
         }
+
+        return new PrincipalUser(user.getEmail(), user.getPassword(), user.getSalt(), grantedAuthorities,
+                    user.getId());
     }
 }

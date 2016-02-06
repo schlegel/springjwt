@@ -1,19 +1,28 @@
-package com.github.schlegel.springjwt.model;
+package com.github.schlegel.springjwt.domain.user;
 
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
+
+@Entity
 public class User {
 
+    @Id
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     private String id;
 
     private String username;
 
+    @Column(unique = true)
     private String email;
 
     private String password;
 
     private String salt;
 
-    public User() {
-    }
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
     public String getId() {
         return id;
@@ -53,6 +62,14 @@ public class User {
 
     public void setSalt(String salt) {
         this.salt = salt;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
     }
 }
 

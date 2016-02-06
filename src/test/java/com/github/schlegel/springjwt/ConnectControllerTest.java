@@ -3,7 +3,7 @@ package com.github.schlegel.springjwt;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.schlegel.springjwt.model.UserRepository;
+import com.github.schlegel.springjwt.domain.user.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,9 +20,7 @@ import javax.servlet.Filter;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
@@ -73,7 +71,7 @@ public class ConnectControllerTest {
     @Test
     public void testAuthentication() throws Exception {
         // login user
-        String result = mockMvc.perform(post("/authentication").param("email", "user@test.de").param("password", "password"))
+        String result = mockMvc.perform(post("/authentication").param("email", "user@example.de").param("password", "password"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").exists())
                 .andReturn().getResponse().getContentAsString();
@@ -91,7 +89,7 @@ public class ConnectControllerTest {
                 .andExpect(status().isUnauthorized());
 
         // login user
-        String jwtToken = authenticateUser("user@test.de", "password");
+        String jwtToken = authenticateUser("user@example.de", "password");
 
         // positive authentication
         mockMvc.perform(get("/securedping").header(headerToken,jwtToken))

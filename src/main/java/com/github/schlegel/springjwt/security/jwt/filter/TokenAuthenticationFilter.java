@@ -2,8 +2,6 @@
 package com.github.schlegel.springjwt.security.jwt.filter;
 
 import com.github.schlegel.springjwt.security.jwt.service.AuthenticationServiceJWT;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -18,8 +16,6 @@ import java.io.IOException;
 
 @Component
 public class TokenAuthenticationFilter extends GenericFilterBean {
-
-    private Log logger = LogFactory.getLog(TokenAuthenticationFilter.class);
 
     @Value("${jwt.token.header}")
     private String headerToken;

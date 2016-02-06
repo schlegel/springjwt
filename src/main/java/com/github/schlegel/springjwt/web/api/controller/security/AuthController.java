@@ -1,4 +1,4 @@
-package com.github.schlegel.springjwt.web.api.controller;
+package com.github.schlegel.springjwt.web.api.controller.security;
 
 import com.github.schlegel.springjwt.security.jwt.service.AuthenticationServiceUsernamePassword;
 import com.nimbusds.jwt.SignedJWT;
