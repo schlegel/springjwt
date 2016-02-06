@@ -27,6 +27,19 @@ public class CompanyControllerTest  extends BaseTest{
     CompanyRepository companyRepository;
 
     @Test
+    public void testCreateCompany_withRole_Superadmin_wrong_Validation() throws Exception {
+        CompanyDTO companyCreate = new CompanyDTO();
+        companyCreate.setName(null);
+        companyCreate.setDescription("My Descrption");
+        companyCreate.getMailPostfixes().add(".de");
+
+        mockMvc.perform(post("/companies").header(headerToken, authenticateUser("superadmin@example.de", "password"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(companyCreate)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void testCreateCompany_withRole_Superadmin() throws Exception {
         CompanyDTO companyCreate = new CompanyDTO();
         companyCreate.setName("My Company");
@@ -42,8 +55,8 @@ public class CompanyControllerTest  extends BaseTest{
     @Test
     public void testCreateCompany_withRole_CompanyAdmin() throws Exception {
         CompanyDTO companyCreate = new CompanyDTO();
-        companyCreate.setName(null);
-        companyCreate.setDescription("My Descrption");
+        companyCreate.setName("My Company");
+        companyCreate.setDescription("My Description");
         //companyCreate.getMailPostfixes().add(".de");
 
         mockMvc.perform(post("/companies").header(headerToken, authenticateUser("companyadmin@example.de", "password"))
