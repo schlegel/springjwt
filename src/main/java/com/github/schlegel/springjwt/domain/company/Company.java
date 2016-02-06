@@ -22,7 +22,7 @@ public class Company {
 
     private String description;
 
-    @OneToMany
+    @OneToMany(mappedBy = "company")
     private List<User> users = new LinkedList<>();
 
     public String getId() {
