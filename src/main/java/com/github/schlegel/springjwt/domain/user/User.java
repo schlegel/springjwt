@@ -1,5 +1,6 @@
 package com.github.schlegel.springjwt.domain.user;
 
+import com.github.schlegel.springjwt.domain.company.Company;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -23,6 +24,9 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private UserRole role;
+
+    @ManyToOne
+    private Company company;
 
     public String getId() {
         return id;
@@ -70,6 +74,14 @@ public class User {
 
     public void setRole(UserRole role) {
         this.role = role;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
     }
 }
 
