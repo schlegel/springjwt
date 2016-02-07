@@ -1,8 +1,6 @@
 package com.github.schlegel.springjwt.validation.transport;
 
-/**
- * Created by sebastianbayerl on 06/02/16.
- */
+
 public class FieldErrorOutputDto {
 
     private String field;
