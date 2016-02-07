@@ -20,6 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class CompanyControllerTest  extends BaseWebTest{
@@ -41,7 +42,8 @@ public class CompanyControllerTest  extends BaseWebTest{
         mockMvc.perform(post("/companies").header(headerToken, getAuthToken("superadmin@example.de", "password"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(companyCreate)))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andDo(print());
     }
 
     @Test
@@ -54,7 +56,8 @@ public class CompanyControllerTest  extends BaseWebTest{
         mockMvc.perform(post("/companies").header(headerToken, getAuthToken("companyadmin@example.de", "password"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(companyCreate)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andDo(print());
     }
 
     @Test
@@ -67,7 +70,8 @@ public class CompanyControllerTest  extends BaseWebTest{
         mockMvc.perform(post("/companies").header(headerToken, getAuthToken("user@example.de", "password"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(companyCreate)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andDo(print());
     }
 
     // CREATE COMPANY VALIDATION
@@ -80,7 +84,8 @@ public class CompanyControllerTest  extends BaseWebTest{
         mockMvc.perform(post("/companies").header(headerToken, getAuthToken("superadmin@example.de", "password"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(companyCreate)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andDo(print());
     }
 
 
@@ -103,7 +108,8 @@ public class CompanyControllerTest  extends BaseWebTest{
                 .content(mapper.writeValueAsString(companyUpdate)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Updated Company Name"))
-                .andExpect(jsonPath("$.description").value("Updated Company Description"));
+                .andExpect(jsonPath("$.description").value("Updated Company Description"))
+                .andDo(print());
     }
 
     @Test
@@ -127,7 +133,8 @@ public class CompanyControllerTest  extends BaseWebTest{
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(companyUpdate)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.description").value("Updated Company Description"));
+                .andExpect(jsonPath("$.description").value("Updated Company Description"))
+                .andDo(print());
     }
 
     @Test
@@ -147,7 +154,8 @@ public class CompanyControllerTest  extends BaseWebTest{
         mockMvc.perform(patch("/companies/" + company.getId()).header(headerToken, getAuthToken("companyadmin@example.de", "password"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(companyUpdate)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andDo(print());
     }
 
 
@@ -172,5 +180,6 @@ public class CompanyControllerTest  extends BaseWebTest{
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(companyUpdate)))
                 .andExpect(status().isBadRequest())
+                .andDo(print());
     }
 }
