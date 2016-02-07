@@ -5,6 +5,7 @@ import com.github.schlegel.springjwt.domain.company.Company;
 import com.github.schlegel.springjwt.domain.company.CompanyRepository;
 import com.github.schlegel.springjwt.domain.user.User;
 import com.github.schlegel.springjwt.domain.user.UserRepository;
+import com.github.schlegel.springjwt.mockdata.MockDataCreator;
 import com.github.schlegel.springjwt.service.company.transport.CompanyCreateDto;
 import com.github.schlegel.springjwt.service.company.transport.CompanyUpdateDto;
 import org.junit.Test;
@@ -15,15 +16,19 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Set;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class CompanyControllerTest  extends BaseWebTest{
+
+    @Autowired
+    private MockDataCreator mockDataCreator;
 
     @Autowired
     CompanyRepository companyRepository;
@@ -37,6 +42,8 @@ public class CompanyControllerTest  extends BaseWebTest{
 
     @Test
     public void createValidCompanyWithSuperAdmin() throws Exception {
+        mockDataCreator.createUsers();
+
         CompanyCreateDto companyCreate = new CompanyCreateDto();
         companyCreate.setName("Company Name");
         companyCreate.setDescription("Company Description");
@@ -51,6 +58,8 @@ public class CompanyControllerTest  extends BaseWebTest{
 
     @Test
     public void createValidCompanyButWithCompanyAdmin() throws Exception {
+        mockDataCreator.createUsers();
+
         CompanyCreateDto companyCreate = new CompanyCreateDto();
         companyCreate.setName("Company Name");
         companyCreate.setDescription("Company Description");
@@ -65,6 +74,8 @@ public class CompanyControllerTest  extends BaseWebTest{
 
     @Test
     public void createValidCompanyButWithUser() throws Exception {
+        mockDataCreator.createUsers();
+
         CompanyCreateDto companyCreate = new CompanyCreateDto();
         companyCreate.setName("Company Name");
         companyCreate.setDescription("Company Description");
@@ -83,6 +94,8 @@ public class CompanyControllerTest  extends BaseWebTest{
 
     @Test
     public void createInvalidCompanyWithSuperAdmin() throws Exception {
+        mockDataCreator.createUsers();
+
         CompanyCreateDto companyCreate = new CompanyCreateDto();
         companyCreate.setDescription("Only Description");
 
@@ -95,6 +108,7 @@ public class CompanyControllerTest  extends BaseWebTest{
 
     @Test
     public void createInvalidCompanyWithCompanyAdmin() throws Exception {
+        mockDataCreator.createUsers();
 
         CompanyCreateDto companyCreate = new CompanyCreateDto();
         companyCreate.setDescription("Company Description");
@@ -112,6 +126,8 @@ public class CompanyControllerTest  extends BaseWebTest{
 
     @Test
     public void updateCompanyWithSuperAdmin() throws Exception {
+        mockDataCreator.createUsers();
+
         // Create initial company
         Company company = new Company();
         company.setName("Company Name");
@@ -134,15 +150,21 @@ public class CompanyControllerTest  extends BaseWebTest{
 
     @Test
     public void updateCompanyWithValidCompanyAdmin() throws Exception {
+        mockDataCreator.createUsers();
+
+        // Add user to compay
+        User companyAdmin = userRepository.findByEmail("companyadmin@example.de");
+
+        Set<User> users =  new HashSet<>();
+        users.add(companyAdmin);
 
         // Create initial company
         Company company = new Company();
         company.setName("Company Name");
         company.setDescription("Company Description");
+        company.setUsers(users);
         companyRepository.save(company);
 
-        // Add user to compay
-        User companyAdmin = userRepository.findByEmail("companyadmin@example.de");
         companyAdmin.setCompany(company);
         userRepository.save(companyAdmin);
 
@@ -155,11 +177,13 @@ public class CompanyControllerTest  extends BaseWebTest{
                 .content(mapper.writeValueAsString(companyUpdate)))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.description").value("Updated Company Description"));
+                .andExpect(jsonPath("$.description").value("Updated Company Description"))
+                .andExpect(jsonPath("$.users").isNotEmpty());
     }
 
     @Test
     public void updateCompanyWithInvalidCompanyAdmin() throws Exception {
+        mockDataCreator.createUsers();
 
         // Create initial company
         Company company = new Company();
@@ -185,6 +209,7 @@ public class CompanyControllerTest  extends BaseWebTest{
 
     @Test
     public void updateInvalidCompanyWithSuperAdmin() throws Exception {
+        mockDataCreator.createUsers();
 
         // Create initial company
         Company company = new Company();
@@ -205,6 +230,7 @@ public class CompanyControllerTest  extends BaseWebTest{
 
     @Test
     public void updateInvalidCompanyWithValidCompanyAdmin() throws Exception {
+        mockDataCreator.createUsers();
 
         // Create initial company
         Company company = new Company();

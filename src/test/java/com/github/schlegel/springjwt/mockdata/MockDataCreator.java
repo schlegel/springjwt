@@ -1,39 +1,21 @@
-package com.github.schlegel.springjwt.mock;
+package com.github.schlegel.springjwt.mockdata;
 
 import com.github.schlegel.springjwt.domain.company.Company;
 import com.github.schlegel.springjwt.domain.company.CompanyRepository;
 import com.github.schlegel.springjwt.domain.user.User;
 import com.github.schlegel.springjwt.domain.user.UserRepository;
 import com.github.schlegel.springjwt.domain.user.UserRole;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.annotation.Profile;
-import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
-import javax.transaction.Transactional;
-
-
 @Component
-@Profile({"inmemory"})
-@Transactional
-public class MockDataImport implements ApplicationListener<ContextRefreshedEvent> {
+public class MockDataCreator {
 
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private CompanyRepository companyRepository;
-
-    private Log logger = LogFactory.getLog(MockDataImport.class);
-
-    @Override
-    public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        createUsers();
-        createCompanies();
-    }
 
     public void createUsers() {
         // create normal user
@@ -45,8 +27,6 @@ public class MockDataImport implements ApplicationListener<ContextRefreshedEvent
         user.setRole(UserRole.USER);
 
         userRepository.save(user);
-        logger.info("User " + user.getEmail() + " created with id " + user.getId());
-
 
         // create company admin user
         User companyAdmin = new User();
@@ -57,7 +37,6 @@ public class MockDataImport implements ApplicationListener<ContextRefreshedEvent
         companyAdmin.setRole(UserRole.COMPANY_ADMIN);
 
         userRepository.save(companyAdmin);
-        logger.info("User " + companyAdmin.getEmail() + " created with id " + companyAdmin.getId());
 
         // create super admin user
         User superAdmin = new User();
@@ -68,11 +47,10 @@ public class MockDataImport implements ApplicationListener<ContextRefreshedEvent
         superAdmin.setRole(UserRole.SUPER_ADMIN);
 
         userRepository.save(superAdmin);
-        logger.info("User " + superAdmin.getEmail() + " created with id " + superAdmin.getId());
     }
 
 
-    public void createCompanies() {
+    public void createCompany() {
 
         Company company = new Company();
         company.setName("comp1");

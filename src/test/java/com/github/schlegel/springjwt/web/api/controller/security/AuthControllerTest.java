@@ -3,8 +3,10 @@ package com.github.schlegel.springjwt.web.api.controller.security;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.schlegel.springjwt.BaseWebTest;
+import com.github.schlegel.springjwt.mockdata.MockDataCreator;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -13,6 +15,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class AuthControllerTest extends BaseWebTest{
+
+    @Autowired
+    private MockDataCreator mockDataCreator;
+
     @Test
     public void testWrongAuthentication() throws Exception {
         // only password
@@ -30,6 +36,8 @@ public class AuthControllerTest extends BaseWebTest{
 
     @Test
     public void testAuthentication() throws Exception {
+        mockDataCreator.createUsers();
+
         // login user
         String result = mockMvc.perform(post("/authentication").param("email", "user@example.de").param("password", "password"))
                 .andExpect(status().isOk())
@@ -39,6 +47,8 @@ public class AuthControllerTest extends BaseWebTest{
 
     @Test
     public void testAuthSecuredPing() throws Exception {
+        mockDataCreator.createUsers();
+
         // negative authentication
         mockMvc.perform(get("/securedping"))
                 .andExpect(status().isUnauthorized());
