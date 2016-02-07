@@ -30,7 +30,7 @@ public class RestErrorHandler {
      * @return The validation errors encapsulated in a ValidationErrorOutputDto object.
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Validation Error")
     @ResponseBody
     public ValidationErrorOutputDto processValidationError(MethodArgumentNotValidException ex) {
         ValidationErrorOutputDto dto = new ValidationErrorOutputDto();
@@ -56,14 +56,16 @@ public class RestErrorHandler {
      * @return The validation errors encapsulated in a ValidationErrorOutputDto object.
      */
     @ExceptionHandler(ConstraintViolationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Validation Error")
     @ResponseBody
     public ValidationErrorOutputDto processValidationError(ConstraintViolationException ex) {
         ValidationErrorOutputDto dto = new ValidationErrorOutputDto();
         Set<? extends ConstraintViolation<?>> result = ex.getConstraintViolations();
 
         for (ConstraintViolation<?> violation : result) {
-            String field = violation.getPropertyPath().toString();
+            // only use the field name
+            String[] splits = violation.getPropertyPath().toString().split("\\.");
+            String field = splits[splits.length - 1];
 
             if (field == null || field.equals("")) {
                 dto.addGlobalError(violation.getMessage());
@@ -82,7 +84,7 @@ public class RestErrorHandler {
      * @return The conversion errors encapsulated in a ValidationErrorOutputDto object.
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Conversion Error")
     @ResponseBody
     public ValidationErrorOutputDto processValidationError(MethodArgumentTypeMismatchException ex) {
         ValidationErrorOutputDto dto = new ValidationErrorOutputDto();
