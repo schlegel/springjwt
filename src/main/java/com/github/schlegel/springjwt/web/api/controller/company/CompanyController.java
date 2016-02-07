@@ -1,8 +1,9 @@
 package com.github.schlegel.springjwt.web.api.controller.company;
 
-import com.github.schlegel.springjwt.domain.company.Company;
 import com.github.schlegel.springjwt.service.company.CompanyService;
-import com.github.schlegel.springjwt.service.company.transport.CompanyInputDto;
+import com.github.schlegel.springjwt.service.company.transport.CompanyCreateDto;
+import com.github.schlegel.springjwt.service.company.transport.CompanyOutputDto;
+import com.github.schlegel.springjwt.service.company.transport.CompanyUpdateDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,13 +20,13 @@ public class CompanyController {
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)
-    public Company createCompany(@RequestBody CompanyInputDto companyInputDto) {
-        return companyService.createCompany(companyInputDto);
+    public CompanyOutputDto createCompany(@RequestBody CompanyCreateDto companyCreateDto) {
+        return companyService.createCompany(companyCreateDto);
     }
 
     @RequestMapping(value = "/{companyId}", method = RequestMethod.PATCH)
     @ResponseStatus(value = HttpStatus.OK)
-    public Company editCompany(@PathVariable UUID companyId, @RequestBody CompanyInputDto companyInputDto) {
-        return companyService.editCompany(companyId, companyInputDto);
+    public CompanyOutputDto editCompany(@PathVariable UUID companyId, @RequestBody CompanyUpdateDto companyUpdateDto) {
+        return companyService.updateCompany(companyId, companyUpdateDto);
     }
 }

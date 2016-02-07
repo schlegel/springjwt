@@ -66,7 +66,6 @@ public class DaoUserDetailService implements UserDetailsService {
             grantedAuthorities.add(new SimpleGrantedAuthority(AuthoritiesConstants.SUPER_ADMIN));
         }
 
-        return new PrincipalUser(user.getEmail(), user.getPassword(), user.getSalt(), grantedAuthorities,
-                    user.getId());
+        return new PrincipalUser(user.getEmail(), user.getPassword(), user.getSalt(), grantedAuthorities, user.getId().toString());
     }
 }

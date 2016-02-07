@@ -3,7 +3,7 @@ package com.github.schlegel.springjwt.web.api.controller.company;
 import com.github.schlegel.springjwt.BaseWebTest;
 import com.github.schlegel.springjwt.domain.company.Company;
 import com.github.schlegel.springjwt.domain.company.CompanyRepository;
-import com.github.schlegel.springjwt.service.company.transport.CompanyInputDto;
+import com.github.schlegel.springjwt.service.company.transport.CompanyCreateDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class CompanyControllerTest  extends BaseWebTest{
 
     @Test
     public void testCreateCompany_withRole_Superadmin_wrong_Validation() throws Exception {
-        CompanyInputDto companyCreate = new CompanyInputDto();
+        CompanyCreateDto companyCreate = new CompanyCreateDto();
         companyCreate.setName(null);
         companyCreate.setDescription("My Descrption");
         companyCreate.getMailPostfixes().add(".de");
@@ -36,7 +36,7 @@ public class CompanyControllerTest  extends BaseWebTest{
 
     @Test
     public void testCreateCompany_withRole_Superadmin() throws Exception {
-        CompanyInputDto companyCreate = new CompanyInputDto();
+        CompanyCreateDto companyCreate = new CompanyCreateDto();
         companyCreate.setName("My Company");
         companyCreate.setDescription("My Descrption");
         companyCreate.getMailPostfixes().add(".de");
@@ -49,7 +49,7 @@ public class CompanyControllerTest  extends BaseWebTest{
 
     @Test
     public void testCreateCompany_withRole_CompanyAdmin() throws Exception {
-        CompanyInputDto companyCreate = new CompanyInputDto();
+        CompanyCreateDto companyCreate = new CompanyCreateDto();
         companyCreate.setName("My Company");
         companyCreate.setDescription("My Description");
         //companyCreate.getMailPostfixes().add(".de");
@@ -69,7 +69,7 @@ public class CompanyControllerTest  extends BaseWebTest{
         companyRepository.save(company);
 
         // Create Patch Company DTO
-        CompanyInputDto companyUpdate = new CompanyInputDto();
+        CompanyCreateDto companyUpdate = new CompanyCreateDto();
         companyUpdate.setName("Updated Company Name");
         companyUpdate.setDescription("Updated Description");
 
@@ -90,7 +90,7 @@ public class CompanyControllerTest  extends BaseWebTest{
         companyRepository.save(company);
 
         // Create Patch Company DTO
-        CompanyInputDto companyUpdate = new CompanyInputDto();
+        CompanyCreateDto companyUpdate = new CompanyCreateDto();
         companyUpdate.setName("Updated Company Name");
         companyUpdate.setDescription("Updated Description");
 

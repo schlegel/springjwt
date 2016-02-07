@@ -1,16 +1,8 @@
 package com.github.schlegel.springjwt.service.company.transport;
 
-import org.hibernate.validator.constraints.NotEmpty;
-import org.joda.time.DateTime;
-
 import javax.validation.constraints.NotNull;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
 
-public class CompanyInputDto {
-
-    private UUID id;
+public class CompanyUpdateDto {
 
     @NotNull
     private String name;
@@ -18,22 +10,8 @@ public class CompanyInputDto {
     private String description;
     private String mainContact;
 
-    @NotEmpty
-    private Set<String> mailPostfixes = new HashSet<>();
-    private DateTime createdAt;
-    private DateTime updatedAt;
     private boolean verified;
     private boolean active;
-
-
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -65,30 +43,6 @@ public class CompanyInputDto {
 
     public void setMainContact(String mainContact) {
         this.mainContact = mainContact;
-    }
-
-    public Set<String> getMailPostfixes() {
-        return mailPostfixes;
-    }
-
-    public void setMailPostfixes(Set<String> mailPostfixes) {
-        this.mailPostfixes = mailPostfixes;
-    }
-
-    public DateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(DateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public DateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(DateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 
     public boolean isVerified() {

@@ -4,7 +4,9 @@ import com.github.schlegel.springjwt.domain.company.Company;
 import com.github.schlegel.springjwt.domain.company.CompanyRepository;
 import com.github.schlegel.springjwt.domain.user.User;
 import com.github.schlegel.springjwt.domain.user.UserRepository;
-import com.github.schlegel.springjwt.service.company.transport.CompanyInputDto;
+import com.github.schlegel.springjwt.service.company.transport.CompanyCreateDto;
+import com.github.schlegel.springjwt.service.company.transport.CompanyOutputDto;
+import com.github.schlegel.springjwt.service.company.transport.CompanyUpdateDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -24,22 +26,25 @@ public class CompanyServiceImpl implements CompanyService {
     private UserRepository userRepository;
 
     @Override
-    public Company createCompany(CompanyInputDto companyInputDto) {
-        Company company = companyDtoMapper.companyDTOtoCompany(companyInputDto);
+    public CompanyOutputDto createCompany(CompanyCreateDto companyCreateDto) {
+        Company company = companyDtoMapper.companyInputDtoToCompany(companyCreateDto);
         companyRepository.save(company);
-        return company;
+        return companyDtoMapper.companyToCompanyOutputDto(company);
     }
 
     @Override
-    public Company editCompany(UUID companyId, CompanyInputDto companyInputDto) {
+    public CompanyOutputDto updateCompany(UUID companyId, CompanyUpdateDto companyCreateDto) {
         Company company = companyRepository.findOne(companyId);
         Assert.notNull(company);
 
-        return companyDtoMapper.updateCompanyFromCompanyDTO(companyInputDto, company);
+        companyDtoMapper.updateCompanyFromCompanyInputDto(companyCreateDto, company);
+        companyRepository.save(company);
+
+        return companyDtoMapper.companyToCompanyOutputDto(company);
     }
 
     @Override
-    public Company addUserToCompany(UUID companyId, String userId) {
+    public Company addUserToCompany(UUID companyId, UUID userId) {
         Company company = companyRepository.findOne(companyId);
         User user = userRepository.findOne(userId);
 

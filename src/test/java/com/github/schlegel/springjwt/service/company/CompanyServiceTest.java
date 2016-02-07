@@ -1,7 +1,7 @@
 package com.github.schlegel.springjwt.service.company;
 
 import com.github.schlegel.springjwt.BaseAuthContextTest;
-import com.github.schlegel.springjwt.service.company.transport.CompanyInputDto;
+import com.github.schlegel.springjwt.service.company.transport.CompanyCreateDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +9,9 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.Arrays;
+import java.util.HashSet;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class CompanyServiceTest extends BaseAuthContextTest{
@@ -30,9 +33,9 @@ public class CompanyServiceTest extends BaseAuthContextTest{
     @Test
     @WithMockUser(roles = {"SUPER_ADMIN"})
     public void testCreateCompany() throws Exception {
-        CompanyInputDto companyCreate = new CompanyInputDto();
+        CompanyCreateDto companyCreate = new CompanyCreateDto();
         companyCreate.setName("My Company");
-        companyCreate.getMailPostfixes().add(".de");
+        companyCreate.setMailPostfixes(new HashSet<>(Arrays.asList(".de")));
 
         companyService.createCompany(companyCreate);
     }
