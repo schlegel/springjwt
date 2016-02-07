@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,8 +32,12 @@ public class CompanyPermissionEvaluator implements DomainPermissionEvaluator {
             if(roles.contains(AuthoritiesConstants.SUPER_ADMIN)) {
                 return true;
             } else if(roles.contains(AuthoritiesConstants.COMPANY_ADMIN)) {
-                User userEntity = userRepository.findByEmailAndCompanyId(user, targetId);
-                return userEntity != null;
+                User companyAdmin = userRepository.findByEmailAndCompanyId(user, targetId);
+                boolean isCompanyAdmin = companyAdmin != null;
+
+                List<String> grantedPermissions = Arrays.asList("update", "addUser");
+
+                return isCompanyAdmin && grantedPermissions.contains(permission);
             }
 
         return false;
