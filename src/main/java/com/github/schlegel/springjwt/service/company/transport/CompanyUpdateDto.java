@@ -1,17 +1,24 @@
 package com.github.schlegel.springjwt.service.company.transport;
 
+import com.github.schlegel.springjwt.security.AuthoritiesConstants;
+import com.github.schlegel.springjwt.validation.RoleRestriction;
+
 import javax.validation.constraints.NotNull;
 
 public class CompanyUpdateDto {
 
     @NotNull
+    @RoleRestriction(AuthoritiesConstants.SUPER_ADMIN)
     private String name;
     private String address;
     private String description;
+    @RoleRestriction(AuthoritiesConstants.SUPER_ADMIN)
     private String mainContact;
 
-    private boolean verified;
-    private boolean active;
+    @RoleRestriction(AuthoritiesConstants.SUPER_ADMIN)
+    private Boolean verified;
+    @RoleRestriction(AuthoritiesConstants.SUPER_ADMIN)
+    private Boolean active;
 
     public String getName() {
         return name;
@@ -45,19 +52,19 @@ public class CompanyUpdateDto {
         this.mainContact = mainContact;
     }
 
-    public boolean isVerified() {
+    public Boolean isVerified() {
         return verified;
     }
 
-    public void setVerified(boolean verified) {
+    public void setVerified(Boolean verified) {
         this.verified = verified;
     }
 
-    public boolean isActive() {
+    public Boolean isActive() {
         return active;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(Boolean active) {
         this.active = active;
     }
 }

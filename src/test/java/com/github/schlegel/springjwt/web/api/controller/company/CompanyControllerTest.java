@@ -120,15 +120,13 @@ public class CompanyControllerTest  extends BaseWebTest{
         userRepository.save(companyAdmin);
 
         // Create Patch Company DTO
-        CompanyCreateDto companyUpdate = new CompanyCreateDto();
-        companyUpdate.setName("Updated Company Name");
+        CompanyUpdateDto companyUpdate = new CompanyUpdateDto();
         companyUpdate.setDescription("Updated Company Description");
 
         mockMvc.perform(patch("/companies/" + company.getId()).header(headerToken, getAuthToken("companyadmin@example.de", "password"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(companyUpdate)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Updated Company Name"))
                 .andExpect(jsonPath("$.description").value("Updated Company Description"));
     }
 
@@ -142,7 +140,7 @@ public class CompanyControllerTest  extends BaseWebTest{
         companyRepository.save(company);
 
         // Create Patch Company DTO
-        CompanyCreateDto companyUpdate = new CompanyCreateDto();
+        CompanyUpdateDto companyUpdate = new CompanyUpdateDto();
         companyUpdate.setName("Updated Company Name");
         companyUpdate.setDescription("Updated Company Description");
 
@@ -150,5 +148,29 @@ public class CompanyControllerTest  extends BaseWebTest{
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(companyUpdate)))
                 .andExpect(status().isForbidden());
+    }
+
+
+    @Test
+    public void updateInvalidCompanyWithValidCompanyAdmin() throws Exception {
+
+        // Create initial company
+        Company company = new Company();
+        company.setName("Company Name");
+        company.setDescription("Company Description");
+        companyRepository.save(company);
+
+        User companyAdmin = userRepository.findByEmail("companyadmin@example.de");
+        companyAdmin.setCompany(company);
+        userRepository.save(companyAdmin);
+
+        // Create Patch Company DTO
+        CompanyUpdateDto companyUpdate = new CompanyUpdateDto();
+        companyUpdate.setName("Updated Company Name");
+
+        mockMvc.perform(patch("/companies/" + company.getId()).header(headerToken, getAuthToken("companyadmin@example.de", "password"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(companyUpdate)))
+                .andExpect(status().isBadRequest())
     }
 }

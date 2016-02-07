@@ -16,8 +16,8 @@ public class CompanyOutputDto {
     private Set<String> mailPostfixes;
     private DateTime createdAt;
     private DateTime updatedAt;
-    private boolean verified;
-    private boolean active;
+    private Boolean verified;
+    private Boolean active;
     private Set<CompanyUserOutputDto> users = new HashSet<>();
 
 
@@ -85,19 +85,19 @@ public class CompanyOutputDto {
         this.updatedAt = updatedAt;
     }
 
-    public boolean isVerified() {
+    public Boolean isVerified() {
         return verified;
     }
 
-    public void setVerified(boolean verified) {
+    public void setVerified(Boolean verified) {
         this.verified = verified;
     }
 
-    public boolean isActive() {
+    public Boolean isActive() {
         return active;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(Boolean active) {
         this.active = active;
     }
 
