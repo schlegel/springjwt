@@ -158,6 +158,27 @@ public class CompanyControllerTest  extends BaseWebTest{
                 .andDo(print());
     }
 
+    // EDIT COMPANY VALIDATION
+
+    @Test
+    public void updateInvalidCompanyWithSuperAdmin() throws Exception {
+
+        // Create initial company
+        Company company = new Company();
+        company.setName("Company Name");
+        companyRepository.save(company);
+
+        // Create Patch Company DTO
+        CompanyUpdateDto companyUpdate = new CompanyUpdateDto();
+        companyUpdate.setName(null);
+
+        mockMvc.perform(patch("/companies/" + company.getId()).header(headerToken, getAuthToken("superadmin@example.de", "password"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(companyUpdate)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.fieldErrors").isNotEmpty())
+                .andDo(print());
+    }
 
     @Test
     public void updateInvalidCompanyWithValidCompanyAdmin() throws Exception {
@@ -165,7 +186,6 @@ public class CompanyControllerTest  extends BaseWebTest{
         // Create initial company
         Company company = new Company();
         company.setName("Company Name");
-        company.setDescription("Company Description");
         companyRepository.save(company);
 
         User companyAdmin = userRepository.findByEmail("companyadmin@example.de");
@@ -180,6 +200,7 @@ public class CompanyControllerTest  extends BaseWebTest{
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(companyUpdate)))
                 .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.fieldErrors").isNotEmpty())
                 .andDo(print());
     }
 }
