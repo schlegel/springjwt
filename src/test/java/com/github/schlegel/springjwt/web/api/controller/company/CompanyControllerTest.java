@@ -31,7 +31,10 @@ public class CompanyControllerTest  extends BaseWebTest{
     @Autowired
     UserRepository userRepository;
 
-    // CREATE COMPANY AUTH
+    /* -------------------
+     CREATE COMPANY AUTH TESTS
+    ------------------- */
+
     @Test
     public void createValidCompanyWithSuperAdmin() throws Exception {
         CompanyCreateDto companyCreate = new CompanyCreateDto();
@@ -42,12 +45,12 @@ public class CompanyControllerTest  extends BaseWebTest{
         mockMvc.perform(post("/companies").header(headerToken, getAuthToken("superadmin@example.de", "password"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(companyCreate)))
-                .andExpect(status().isCreated())
-                .andDo(print());
+                .andDo(print())
+                .andExpect(status().isCreated());
     }
 
     @Test
-    public void createCompanyWithCompanyAdmin() throws Exception {
+    public void createValidCompanyButWithCompanyAdmin() throws Exception {
         CompanyCreateDto companyCreate = new CompanyCreateDto();
         companyCreate.setName("Company Name");
         companyCreate.setDescription("Company Description");
@@ -56,12 +59,12 @@ public class CompanyControllerTest  extends BaseWebTest{
         mockMvc.perform(post("/companies").header(headerToken, getAuthToken("companyadmin@example.de", "password"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(companyCreate)))
-                .andExpect(status().isForbidden())
-                .andDo(print());
+                .andDo(print())
+                .andExpect(status().isForbidden());
     }
 
     @Test
-    public void createCompanyWithUser() throws Exception {
+    public void createValidCompanyButWithUser() throws Exception {
         CompanyCreateDto companyCreate = new CompanyCreateDto();
         companyCreate.setName("Company Name");
         companyCreate.setDescription("Company Description");
@@ -70,11 +73,13 @@ public class CompanyControllerTest  extends BaseWebTest{
         mockMvc.perform(post("/companies").header(headerToken, getAuthToken("user@example.de", "password"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(companyCreate)))
-                .andExpect(status().isForbidden())
-                .andDo(print());
+                .andDo(print())
+                .andExpect(status().isForbidden());
     }
 
-    // CREATE COMPANY VALIDATION
+    /* -------------------
+     CREATE COMPANY VALIDATION TESTS
+    ------------------- */
 
     @Test
     public void createInvalidCompanyWithSuperAdmin() throws Exception {
@@ -84,12 +89,27 @@ public class CompanyControllerTest  extends BaseWebTest{
         mockMvc.perform(post("/companies").header(headerToken, getAuthToken("superadmin@example.de", "password"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(companyCreate)))
-                .andExpect(status().isBadRequest())
-                .andDo(print());
+                .andDo(print())
+                .andExpect(status().isBadRequest());
     }
 
+    @Test
+    public void createInvalidCompanyWithCompanyAdmin() throws Exception {
 
-    // EDIT COMPANY AUTH
+        CompanyCreateDto companyCreate = new CompanyCreateDto();
+        companyCreate.setDescription("Company Description");
+
+        mockMvc.perform(post("/companies").header(headerToken, getAuthToken("companyadmin@example.de", "password"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(companyCreate)))
+                .andDo(print())
+                .andExpect(status().isForbidden()); // access audit is before validation
+    }
+
+    /* -------------------
+     EDIT COMPANY AUTH TESTS
+    ------------------- */
+
     @Test
     public void updateCompanyWithSuperAdmin() throws Exception {
         // Create initial company
@@ -106,10 +126,10 @@ public class CompanyControllerTest  extends BaseWebTest{
         mockMvc.perform(patch("/companies/" + company.getId()).header(headerToken, getAuthToken("superadmin@example.de", "password"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(companyUpdate)))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Updated Company Name"))
-                .andExpect(jsonPath("$.description").value("Updated Company Description"))
-                .andDo(print());
+                .andExpect(jsonPath("$.description").value("Updated Company Description"));
     }
 
     @Test
@@ -121,20 +141,21 @@ public class CompanyControllerTest  extends BaseWebTest{
         company.setDescription("Company Description");
         companyRepository.save(company);
 
+        // Add user to compay
         User companyAdmin = userRepository.findByEmail("companyadmin@example.de");
         companyAdmin.setCompany(company);
         userRepository.save(companyAdmin);
 
-        // Create Patch Company DTO
+        // Create Patch Company Dto
         CompanyUpdateDto companyUpdate = new CompanyUpdateDto();
         companyUpdate.setDescription("Updated Company Description");
 
         mockMvc.perform(patch("/companies/" + company.getId()).header(headerToken, getAuthToken("companyadmin@example.de", "password"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(companyUpdate)))
+                .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.description").value("Updated Company Description"))
-                .andDo(print());
+                .andExpect(jsonPath("$.description").value("Updated Company Description"));
     }
 
     @Test
@@ -146,7 +167,7 @@ public class CompanyControllerTest  extends BaseWebTest{
         company.setDescription("Company Description");
         companyRepository.save(company);
 
-        // Create Patch Company DTO
+        // Create Patch Company Dto
         CompanyUpdateDto companyUpdate = new CompanyUpdateDto();
         companyUpdate.setName("Updated Company Name");
         companyUpdate.setDescription("Updated Company Description");
@@ -154,11 +175,13 @@ public class CompanyControllerTest  extends BaseWebTest{
         mockMvc.perform(patch("/companies/" + company.getId()).header(headerToken, getAuthToken("companyadmin@example.de", "password"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(companyUpdate)))
-                .andExpect(status().isForbidden())
-                .andDo(print());
+                .andDo(print())
+                .andExpect(status().isForbidden());
     }
 
-    // EDIT COMPANY VALIDATION
+    /* -------------------
+     EDIT COMPANY VALIDATION TESTS
+    ------------------- */
 
     @Test
     public void updateInvalidCompanyWithSuperAdmin() throws Exception {
@@ -170,14 +193,14 @@ public class CompanyControllerTest  extends BaseWebTest{
 
         // Create Patch Company DTO
         CompanyUpdateDto companyUpdate = new CompanyUpdateDto();
-        companyUpdate.setName(null);
+        companyUpdate.setName("1"); // company name to short
 
         mockMvc.perform(patch("/companies/" + company.getId()).header(headerToken, getAuthToken("superadmin@example.de", "password"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(companyUpdate)))
+                .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.fieldErrors").isNotEmpty())
-                .andDo(print());
+                .andExpect(jsonPath("$.fieldErrors").isNotEmpty());
     }
 
     @Test
@@ -199,8 +222,8 @@ public class CompanyControllerTest  extends BaseWebTest{
         mockMvc.perform(patch("/companies/" + company.getId()).header(headerToken, getAuthToken("companyadmin@example.de", "password"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(companyUpdate)))
+                .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.fieldErrors").isNotEmpty())
-                .andDo(print());
+                .andExpect(jsonPath("$.fieldErrors").isNotEmpty());
     }
 }

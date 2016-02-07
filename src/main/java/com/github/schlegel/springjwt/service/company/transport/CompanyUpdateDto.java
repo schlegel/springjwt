@@ -3,20 +3,24 @@ package com.github.schlegel.springjwt.service.company.transport;
 import com.github.schlegel.springjwt.security.AuthoritiesConstants;
 import com.github.schlegel.springjwt.validation.RoleRestriction;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class CompanyUpdateDto {
 
-    @NotNull
     @RoleRestriction(AuthoritiesConstants.SUPER_ADMIN)
+    @Size(min = 3)
     private String name;
+
     private String address;
+
     private String description;
+
     @RoleRestriction(AuthoritiesConstants.SUPER_ADMIN)
     private String mainContact;
 
     @RoleRestriction(AuthoritiesConstants.SUPER_ADMIN)
     private Boolean verified;
+
     @RoleRestriction(AuthoritiesConstants.SUPER_ADMIN)
     private Boolean active;
 

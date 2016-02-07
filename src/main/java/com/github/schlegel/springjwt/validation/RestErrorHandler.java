@@ -1,7 +1,9 @@
 package com.github.schlegel.springjwt.validation;
 
 import com.github.schlegel.springjwt.validation.transport.ValidationErrorOutputDto;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
@@ -30,9 +33,9 @@ public class RestErrorHandler {
      * @return The validation errors encapsulated in a ValidationErrorOutputDto object.
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Validation Error")
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ValidationErrorOutputDto processValidationError(MethodArgumentNotValidException ex) {
+    public ValidationErrorOutputDto processValidationError(MethodArgumentNotValidException ex, HttpServletResponse response) {
         ValidationErrorOutputDto dto = new ValidationErrorOutputDto();
         BindingResult result = ex.getBindingResult();
 
@@ -46,6 +49,7 @@ public class RestErrorHandler {
             dto.addFieldError(fieldError.getField(), fieldError.getDefaultMessage());
         }
 
+        response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         return dto;
     }
 
@@ -56,12 +60,11 @@ public class RestErrorHandler {
      * @return The validation errors encapsulated in a ValidationErrorOutputDto object.
      */
     @ExceptionHandler(ConstraintViolationException.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Validation Error")
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ValidationErrorOutputDto processValidationError(ConstraintViolationException ex) {
+    public ValidationErrorOutputDto processValidationError(ConstraintViolationException ex, HttpServletResponse response) {
         ValidationErrorOutputDto dto = new ValidationErrorOutputDto();
         Set<? extends ConstraintViolation<?>> result = ex.getConstraintViolations();
-
         for (ConstraintViolation<?> violation : result) {
             // only use the field name
             String[] splits = violation.getPropertyPath().toString().split("\\.");
@@ -74,6 +77,7 @@ public class RestErrorHandler {
             }
         }
 
+        response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         return dto;
     }
 
@@ -84,12 +88,13 @@ public class RestErrorHandler {
      * @return The conversion errors encapsulated in a ValidationErrorOutputDto object.
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Conversion Error")
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ValidationErrorOutputDto processValidationError(MethodArgumentTypeMismatchException ex) {
+    public ValidationErrorOutputDto processValidationError(MethodArgumentTypeMismatchException ex, HttpServletResponse response) {
         ValidationErrorOutputDto dto = new ValidationErrorOutputDto();
         dto.addFieldError(ex.getName(), "Type conversion error occured.");
 
+        response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         return dto;
     }
 
