@@ -10,23 +10,31 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Handles Exceptions that are thrown during validation.
+ */
 @ControllerAdvice
 public class RestErrorHandler {
 
-
+    /**
+     * Processes the exceptions that are thrown during validation on CONTROLLER level.
+     *
+     * @param ex The validation on controller level throws MethodArgumentNotValidExceptions.
+     * @return The validation errors encapsulated in a ValidationErrorOutputDto object.
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ValidationErrorOutputDto processValidationError(MethodArgumentNotValidException ex) {
         ValidationErrorOutputDto dto = new ValidationErrorOutputDto();
         BindingResult result = ex.getBindingResult();
-
 
         List<ObjectError> globalErrors = result.getGlobalErrors();
         for (ObjectError globalError : globalErrors) {
@@ -41,6 +49,12 @@ public class RestErrorHandler {
         return dto;
     }
 
+    /**
+     * Processes the exceptions that are thrown during validation on SERVICE level.
+     *
+     * @param ex The validation on service level throws ConstraintViolationExceptions.
+     * @return The validation errors encapsulated in a ValidationErrorOutputDto object.
+     */
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
@@ -56,11 +70,25 @@ public class RestErrorHandler {
             } else {
                 dto.addFieldError(field, violation.getMessage());
             }
-
         }
 
         return dto;
     }
 
+    /**
+     * Processes the exceptions that are thrown during the type conversion in the input object generation phase.
+     *
+     * @param ex The type conversion in the input object generation phase throws MethodArgumentTypeMismatchException.
+     * @return The conversion errors encapsulated in a ValidationErrorOutputDto object.
+     */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ValidationErrorOutputDto processValidationError(MethodArgumentTypeMismatchException ex) {
+        ValidationErrorOutputDto dto = new ValidationErrorOutputDto();
+        dto.addFieldError(ex.getName(), "Type conversion error occured.");
+
+        return dto;
+    }
 
 }
