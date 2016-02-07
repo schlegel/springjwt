@@ -1,4 +1,4 @@
-package com.github.schlegel.springjwt.security.permissions;
+package com.github.schlegel.springjwt.permissions.manager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -7,6 +7,7 @@ import com.github.schlegel.springjwt.domain.user.UserRepository;
 import com.github.schlegel.springjwt.service.company.transport.CompanyCreateDto;
 import com.github.schlegel.springjwt.service.company.transport.CompanyOutputDto;
 import com.github.schlegel.springjwt.service.company.transport.CompanyUpdateDto;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -28,6 +29,7 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public CompanyOutputDto createCompany(CompanyCreateDto companyCreateDto) {
         Company company = companyDtoMapper.companyInputDtoToCompany(companyCreateDto);
+        company.setCreatedAt(DateTime.now());
         companyRepository.save(company);
         return companyDtoMapper.companyToCompanyOutputDto(company);
     }
@@ -38,6 +40,7 @@ public class CompanyServiceImpl implements CompanyService {
         Assert.notNull(company);
 
         companyDtoMapper.updateCompanyFromCompanyInputDto(companyCreateDto, company);
+        company.setUpdatedAt(DateTime.now());
         companyRepository.save(company);
 
         return companyDtoMapper.companyToCompanyOutputDto(company);

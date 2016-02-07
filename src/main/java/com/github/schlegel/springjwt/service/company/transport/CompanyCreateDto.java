@@ -1,15 +1,14 @@
 package com.github.schlegel.springjwt.service.company.transport;
-
-import com.github.schlegel.springjwt.validation.CheckCompany;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
-@CheckCompany
 public class CompanyCreateDto {
 
     @NotNull
+    @Size(min = 3)
     private String name;
     private String address;
     private String description;

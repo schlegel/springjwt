@@ -1,4 +1,4 @@
-package com.github.schlegel.springjwt.validation;
+package com.github.schlegel.springjwt.validation.annotations;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

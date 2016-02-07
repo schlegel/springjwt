@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -152,7 +153,7 @@ public class CompanyControllerTest  extends BaseWebTest{
     public void updateCompanyWithValidCompanyAdmin() throws Exception {
         mockDataCreator.createUsers();
 
-        // Add user to compay
+        // Add user to company
         User companyAdmin = userRepository.findByEmail("companyadmin@example.de");
 
         Set<User> users =  new HashSet<>();
@@ -221,6 +222,21 @@ public class CompanyControllerTest  extends BaseWebTest{
         companyUpdate.setName("1"); // company name to short
 
         mockMvc.perform(patch("/companies/" + company.getId()).header(headerToken, getAuthToken("superadmin@example.de", "password"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(companyUpdate)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.fieldErrors").isNotEmpty());
+    }
+
+    @Test
+    public void updateNotAvailableCompanyWithSuperAdmin() throws Exception {
+        mockDataCreator.createUsers();
+        // Create Patch Company DTO
+        CompanyUpdateDto companyUpdate = new CompanyUpdateDto();
+        companyUpdate.setName("Company Name");
+
+        mockMvc.perform(patch("/companies/" + UUID.randomUUID().toString()).header(headerToken, getAuthToken("superadmin@example.de", "password")) // update random company id
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(companyUpdate)))
                 .andDo(print())

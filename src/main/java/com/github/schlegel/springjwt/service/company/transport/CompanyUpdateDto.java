@@ -1,7 +1,7 @@
 package com.github.schlegel.springjwt.service.company.transport;
 
 import com.github.schlegel.springjwt.security.AuthoritiesConstants;
-import com.github.schlegel.springjwt.validation.RoleRestriction;
+import com.github.schlegel.springjwt.validation.annotations.RoleRestriction;
 
 import javax.validation.constraints.Size;
 

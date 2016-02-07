@@ -1,10 +1,10 @@
-package com.github.schlegel.springjwt.security.permissions.impl;
+package com.github.schlegel.springjwt.permissions;
 
 import com.github.schlegel.springjwt.domain.company.CompanyRepository;
 import com.github.schlegel.springjwt.domain.user.User;
 import com.github.schlegel.springjwt.domain.user.UserRepository;
 import com.github.schlegel.springjwt.security.AuthoritiesConstants;
-import com.github.schlegel.springjwt.security.permissions.DomainPermissionEvaluator;
+import com.github.schlegel.springjwt.permissions.manager.DomainPermissionEvaluator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;

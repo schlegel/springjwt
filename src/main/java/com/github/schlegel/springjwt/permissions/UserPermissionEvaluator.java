@@ -1,7 +1,7 @@
-package com.github.schlegel.springjwt.security.permissions.impl;
+package com.github.schlegel.springjwt.permissions;
 
 import com.github.schlegel.springjwt.security.AuthoritiesConstants;
-import com.github.schlegel.springjwt.security.permissions.DomainPermissionEvaluator;
+import com.github.schlegel.springjwt.permissions.manager.DomainPermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 

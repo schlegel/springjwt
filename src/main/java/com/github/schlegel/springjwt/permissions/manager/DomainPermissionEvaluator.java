@@ -1,4 +1,4 @@
-package com.github.schlegel.springjwt.security.permissions;
+package com.github.schlegel.springjwt.permissions.manager;
 
 import org.springframework.security.core.Authentication;
 

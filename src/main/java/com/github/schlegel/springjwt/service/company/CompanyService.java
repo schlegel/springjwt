@@ -4,6 +4,7 @@ import com.github.schlegel.springjwt.domain.company.Company;
 import com.github.schlegel.springjwt.service.company.transport.CompanyCreateDto;
 import com.github.schlegel.springjwt.service.company.transport.CompanyOutputDto;
 import com.github.schlegel.springjwt.service.company.transport.CompanyUpdateDto;
+import com.github.schlegel.springjwt.validation.annotations.CompanyExists;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 
@@ -19,9 +20,8 @@ public interface CompanyService {
     CompanyOutputDto createCompany(@Valid CompanyCreateDto companyCreateDto);
 
     @PreAuthorize("hasPermission(#companyId, 'company', 'update')")
-    CompanyOutputDto updateCompany(UUID companyId, @Valid CompanyUpdateDto companyCreateDto);
+    CompanyOutputDto updateCompany(@CompanyExists UUID companyId, @Valid CompanyUpdateDto companyCreateDto);
 
-    //TODO CHECK COMPANY ID?
     @PreAuthorize("hasPermission(#companyId, 'company', 'addUser')")
-    Company addUserToCompany(UUID companyId, UUID userId);
+    Company addUserToCompany(@CompanyExists UUID companyId, UUID userId);
 }

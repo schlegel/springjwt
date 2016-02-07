@@ -37,6 +37,9 @@ public class Application extends SpringBootServletInitializer {
         logger.info("Connected to database: " + context.getEnvironment().getProperty("spring.datasource.url"));
     }
 
+    /**
+     * Creates a webinteface for the in memory database
+     */
     @Bean
     ServletRegistrationBean h2servletRegistration(){
         ServletRegistrationBean registrationBean = new ServletRegistrationBean( new WebServlet());
@@ -44,11 +47,17 @@ public class Application extends SpringBootServletInitializer {
         return registrationBean;
     }
 
+    /**
+     * Needed for method level validation
+     */
     @Bean
     public Validator validator() {
         return new LocalValidatorFactoryBean();
     }
 
+    /**
+     * Needed for method level validation
+     */
     @Bean
     public MethodValidationPostProcessor methodValidationPostProcessor() {
         MethodValidationPostProcessor methodValidationPostProcessor = new MethodValidationPostProcessor();
