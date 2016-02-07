@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-public class CompanyServiceTest extends BaseAuthContextTest{
+public class CompanyServiceTest extends BaseAuthContextTest {
 
     @Autowired
     CompanyService companyService;
