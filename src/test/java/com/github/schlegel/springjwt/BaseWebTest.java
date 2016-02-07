@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -19,7 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
-public class BaseWebTest {
+public abstract class BaseWebTest extends AbstractTransactionalJUnit4SpringContextTests {
 
     @Autowired
     private WebApplicationContext context;

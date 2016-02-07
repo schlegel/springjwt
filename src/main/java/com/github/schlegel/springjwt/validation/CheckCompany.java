@@ -1,7 +1,7 @@
 package com.github.schlegel.springjwt.validation;
 
 import com.github.schlegel.springjwt.domain.company.CompanyRepository;
-import com.github.schlegel.springjwt.service.company.transport.CompanyInputDto;
+import com.github.schlegel.springjwt.service.company.transport.CompanyCreateDto;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.Constraint;
@@ -26,7 +26,7 @@ public @interface CheckCompany {
 
 
 
-    class CheckCompanyValidator  implements ConstraintValidator<CheckCompany, CompanyInputDto> {
+    class CheckCompanyValidator  implements ConstraintValidator<CheckCompany, CompanyCreateDto> {
 
         @Autowired
         private CompanyRepository companyRepository;
@@ -37,7 +37,7 @@ public @interface CheckCompany {
         }
 
         @Override
-        public boolean isValid(CompanyInputDto value, ConstraintValidatorContext context) {
+        public boolean isValid(CompanyCreateDto value, ConstraintValidatorContext context) {
 
             System.out.println(companyRepository.findAll().size());
 
