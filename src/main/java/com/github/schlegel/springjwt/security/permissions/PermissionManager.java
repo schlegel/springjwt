@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 public class PermissionManager implements PermissionEvaluator {
 
     private final Logger logger = LoggerFactory.getLogger(PermissionManager.class);
-
     private Map<String, DomainPermissionEvaluator> permissionEvaluatorMap;
 
     @Autowired
@@ -28,7 +27,6 @@ public class PermissionManager implements PermissionEvaluator {
         for(DomainPermissionEvaluator permissionEvaluator : permissionEvaluators) {
             this.permissionEvaluatorMap.put(permissionEvaluator.getDomainId(), permissionEvaluator);
         }
-
     }
 
     @Override
@@ -39,16 +37,14 @@ public class PermissionManager implements PermissionEvaluator {
     @Override
     public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
         logger.debug(authentication.getName() + " wants permission " + permission.toString() +  " for " + targetType + " with id " + targetId);
-
         List<String> roles = authentication.getAuthorities().stream().map(a -> a.getAuthority()).collect(Collectors.toList());
 
-        if(permissionEvaluatorMap.containsKey(targetType)) {
-            if((targetId == null ||targetId instanceof UUID) && permission instanceof String) {
+        if (permissionEvaluatorMap.containsKey(targetType)) {
+            if ((targetId == null || targetId instanceof UUID) && permission instanceof String) {
                 return permissionEvaluatorMap.get(targetType).hasPermission((UUID)targetId, (String) permission, roles, authentication.getName(), authentication);
             } else {
                 throw new IllegalArgumentException("Wrong object types for permission or targetId");
             }
-
         } else {
             logger.error("No permission evaluator " + targetType + "available");
             return false;

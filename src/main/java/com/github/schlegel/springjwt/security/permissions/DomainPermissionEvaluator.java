@@ -7,6 +7,6 @@ import java.util.UUID;
 
 public interface DomainPermissionEvaluator {
 
-    public String getDomainId();
-    public boolean hasPermission(UUID targetId, String permission, List<String> roles, String user, Authentication authentication);
+    String getDomainId();
+    boolean hasPermission(UUID targetId, String permission, List<String> roles, String user, Authentication authentication);
 }
