@@ -1,5 +1,6 @@
 package com.github.schlegel.springjwt.service.company.transport;
 
+import com.github.schlegel.springjwt.validation.CheckCompany;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.DateTime;
 
@@ -8,6 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+@CheckCompany
 public class CompanyInputDto {
 
     private UUID id;
