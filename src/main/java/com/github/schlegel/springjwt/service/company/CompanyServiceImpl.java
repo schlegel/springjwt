@@ -18,7 +18,7 @@ import java.util.UUID;
 public class CompanyServiceImpl implements CompanyService {
 
     @Autowired
-    private CompanyDtoMapper2 companyDtoMapper;
+    private CompanyDtoMapper companyDtoMapper;
 
     @Autowired
     private CompanyRepository companyRepository;
