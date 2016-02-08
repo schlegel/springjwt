@@ -12,7 +12,7 @@ import org.mapstruct.MappingTarget;
 import java.util.Optional;
 
 @Mapper(componentModel = "spring")
-public abstract class CompanyDtoMapper {
+public abstract class CompanyDtoMapper2 {
 
 
     abstract CompanyOutputDto companyToCompanyOutputDto (Company company);
