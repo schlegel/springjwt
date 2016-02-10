@@ -2,7 +2,6 @@ package com.github.schlegel.springjwt;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.schlegel.springjwt.domain.user.UserRepository;
 import com.github.schlegel.springjwt.security.jwt.service.AuthenticationServiceUsernamePassword;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,9 +35,6 @@ public abstract class BaseWebTest extends AbstractTransactionalJUnit4SpringConte
 
     protected MockMvc mockMvc;
     protected ObjectMapper mapper;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Before
     public void setUp() throws Exception {

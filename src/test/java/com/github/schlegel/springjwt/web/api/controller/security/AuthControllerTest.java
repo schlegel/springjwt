@@ -39,7 +39,7 @@ public class AuthControllerTest extends BaseWebTest{
         mockDataCreator.createUsers();
 
         // login user
-        String result = mockMvc.perform(post("/authentication").param("email", "user@example.de").param("password", "password"))
+        mockMvc.perform(post("/authentication").param("email", "user@example.de").param("password", "password"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").exists())
                 .andReturn().getResponse().getContentAsString();

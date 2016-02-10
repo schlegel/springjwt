@@ -14,7 +14,6 @@ import java.util.Optional;
 @Mapper(componentModel = "spring")
 public abstract class CompanyDtoMapper {
 
-
     abstract CompanyOutputDto companyToCompanyOutputDto (Company company);
     abstract CompanyUserOutputDto userToCompanyUserOutputDto (User user);
 

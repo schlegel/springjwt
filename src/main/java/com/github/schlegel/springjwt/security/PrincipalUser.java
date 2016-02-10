@@ -7,7 +7,9 @@ import java.util.Collection;
 
 public class PrincipalUser extends User {
 
-    private String id;
+	private static final long serialVersionUID = 1L;
+	
+	private String id;
     private String salt;
 
     public PrincipalUser(String username, String password, String salt,

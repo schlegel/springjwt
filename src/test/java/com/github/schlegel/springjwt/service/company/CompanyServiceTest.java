@@ -97,7 +97,7 @@ public class CompanyServiceTest extends BaseAuthContextTest {
         CompanyUpdateDto companyUpdate = new CompanyUpdateDto();
         companyUpdate.setDescription("Updated Company Description");
 
-        CompanyOutputDto result = companyService.updateCompany(UUID.randomUUID(), companyUpdate);
+        companyService.updateCompany(UUID.randomUUID(), companyUpdate);
     }
 
     @Test(expected = ConstraintViolationException.class)
@@ -123,6 +123,6 @@ public class CompanyServiceTest extends BaseAuthContextTest {
         CompanyUpdateDto companyUpdate = new CompanyUpdateDto();
         companyUpdate.setName("ACME Industries");
 
-        CompanyOutputDto result = companyService.updateCompany(company.getId(), companyUpdate);
+        companyService.updateCompany(company.getId(), companyUpdate);
     }
 }
