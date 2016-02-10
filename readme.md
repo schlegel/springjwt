@@ -1,5 +1,9 @@
 # REST with Spring Boot, JPA and JWT Security
 
+## Development Information
+
+> Eclipse Development: To activate code generation for the mapstruct library, go to global Preferences/Maven/Annotation Processing and choose "Experimental: Delegate Annotation Processing to maven plugins (for maven-processor-plugin only)
+
 ## Spring Boot Application
 
 You can run a Spring Boot application with embedded tomcat or provided tomcat.
