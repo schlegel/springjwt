@@ -7,7 +7,6 @@ import java.lang.annotation.*;
 @Inherited
 public @interface LoggingEvent {
     String value();
-    String eventCreator() default "";
     Property[] properties();
 
     @interface Property {

@@ -21,7 +21,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.security.GeneralSecurityException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -29,34 +28,18 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class LoggingEventInterceptor {
 
-//    private GoogleAnalytics ga;
     private ExpressionEvaluator<String> evaluator = new ExpressionEvaluator<>();
     private MessageBuilder messageBuilder = new MessageBuilder("TOKEN");
 
-    public LoggingEventInterceptor() throws GeneralSecurityException, IOException {
-//        ga = new GoogleAnalytics("UA-TOKEN", "applicationName", "applicationVersion");
-    }
 
     //@After("execution(@com.github.schlegel.LoggingEvent * *(..)) && @annotation(loggingEvent)")
     //@After("execution(* *.*(..)) && @annotation(loggingEvent)")
     @AfterReturning("@annotation(loggingEvent)")
     public void after(JoinPoint joinPoint, LoggingEvent loggingEvent) throws InterruptedException, IOException {
-        String category = "mycompany";
+
         String event = loggingEvent.value();
-        String userName = loggingEvent.eventCreator().isEmpty() ?  SecurityContextHolder.getContext().getAuthentication().getName() : loggingEvent.eventCreator();
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         String clientid = String.valueOf(userName.hashCode());
-
-//        for (int i = 0; i < 10; i++) {
-
-//            EventHit eventHit = new EventHit(category, action, userName, 1);
-//            eventHit.userId(userName);
-//            eventHit.clientId(clientid);
-//            // ga.postAsync(eventHit);
-//            ga.postAsync(eventHit);
-//            System.out.println("loging event user " + userName);
-//        }
-//        Thread.sleep(5000);
-
 
         // Gather together a bunch of messages into a single ClientDelivery. This can happen in a separate thread or process from the call to MessageBuilder.event()
         ClientDelivery delivery = new ClientDelivery();
@@ -75,6 +58,8 @@ public class LoggingEventInterceptor {
             JSONObject sentEvent = messageBuilder.event(clientid, event, props);
             delivery.addMessage(sentEvent);
         }
+
+        // TODO async delivery
 
         // Use an instance of MixpanelAPI to send the messages to Mixpanel's servers.
         MixpanelAPI mixpanel = new MixpanelAPI();
@@ -118,42 +103,42 @@ public class LoggingEventInterceptor {
 
     private  class ExpressionEvaluator<T> extends CachedExpressionEvaluator {
 
-    // shared param discoverer since it caches data internally
-    private final ParameterNameDiscoverer paramNameDiscoverer = new DefaultParameterNameDiscoverer();
+        // shared param discoverer since it caches data internally
+        private final ParameterNameDiscoverer paramNameDiscoverer = new DefaultParameterNameDiscoverer();
 
-    private final Map<ExpressionKey, Expression> conditionCache = new ConcurrentHashMap<>(64);
+        private final Map<ExpressionKey, Expression> conditionCache = new ConcurrentHashMap<>(64);
 
-    private final Map<AnnotatedElementKey, Method> targetMethodCache = new ConcurrentHashMap<>(64);
+        private final Map<AnnotatedElementKey, Method> targetMethodCache = new ConcurrentHashMap<>(64);
 
-    /**
-     * Create the suitable {@link EvaluationContext} for the specified event handling
-     * on the specified method.
-     */
-    public EvaluationContext createEvaluationContext(Object object, Class<?> targetClass, Method method, Object[] args) {
+        /**
+         * Create the suitable {@link EvaluationContext} for the specified event handling
+         * on the specified method.
+         */
+        public EvaluationContext createEvaluationContext(Object object, Class<?> targetClass, Method method, Object[] args) {
 
-        Method targetMethod = getTargetMethod(targetClass, method);
-        ExpressionRootObject root = new ExpressionRootObject(object, args);
-        return new MethodBasedEvaluationContext(root, targetMethod, args, this.paramNameDiscoverer);
-    }
-
-    /**
-     * Specify if the condition defined by the specified expression matches.
-     */
-    public T condition(String conditionExpression, AnnotatedElementKey elementKey, EvaluationContext evalContext, Class<T> clazz) {
-        return getExpression(this.conditionCache, elementKey, conditionExpression).getValue(evalContext, clazz);
-    }
-
-    private Method getTargetMethod(Class<?> targetClass, Method method) {
-        AnnotatedElementKey methodKey = new AnnotatedElementKey(method, targetClass);
-        Method targetMethod = this.targetMethodCache.get(methodKey);
-        if (targetMethod == null) {
-            targetMethod = AopUtils.getMostSpecificMethod(method, targetClass);
-            if (targetMethod == null) {
-                targetMethod = method;
-            }
-            this.targetMethodCache.put(methodKey, targetMethod);
+            Method targetMethod = getTargetMethod(targetClass, method);
+            ExpressionRootObject root = new ExpressionRootObject(object, args);
+            return new MethodBasedEvaluationContext(root, targetMethod, args, this.paramNameDiscoverer);
         }
-        return targetMethod;
+
+        /**
+         * Specify if the condition defined by the specified expression matches.
+         */
+        public T condition(String conditionExpression, AnnotatedElementKey elementKey, EvaluationContext evalContext, Class<T> clazz) {
+            return getExpression(this.conditionCache, elementKey, conditionExpression).getValue(evalContext, clazz);
+        }
+
+        private Method getTargetMethod(Class<?> targetClass, Method method) {
+            AnnotatedElementKey methodKey = new AnnotatedElementKey(method, targetClass);
+            Method targetMethod = this.targetMethodCache.get(methodKey);
+            if (targetMethod == null) {
+                targetMethod = AopUtils.getMostSpecificMethod(method, targetClass);
+                if (targetMethod == null) {
+                    targetMethod = method;
+                }
+                this.targetMethodCache.put(methodKey, targetMethod);
+            }
+            return targetMethod;
+        }
     }
-}
 }
