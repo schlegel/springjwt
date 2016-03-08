@@ -51,7 +51,7 @@ public class CompanyServiceTest extends BaseAuthContextTest {
     }
 
     @Test
-    @WithMockUser(roles = {"SUPER_ADMIN"})
+    @WithMockUser(username = "superadmin@example.de", roles = {"SUPER_ADMIN"})
     public void testCreateCompany() throws Exception {
         CompanyCreateDto companyCreate = new CompanyCreateDto();
         companyCreate.setName("My Company");

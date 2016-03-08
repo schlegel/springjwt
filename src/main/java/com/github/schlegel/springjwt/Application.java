@@ -19,7 +19,7 @@ import java.util.Arrays;
 
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.github.schlegel.springjwt"})
+@ComponentScan(basePackages = {"com.github.schlegel"})
 public class Application extends SpringBootServletInitializer {
 
     private static Log logger = LogFactory.getLog(Application.class);
