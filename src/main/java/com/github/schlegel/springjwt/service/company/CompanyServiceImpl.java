@@ -28,7 +28,6 @@ public class CompanyServiceImpl implements CompanyService {
     private UserRepository userRepository;
 
     @Override
-//    @LoggingEvent("company-create")
     @LoggingEvent(value = "company-create", properties = {
             @LoggingEvent.Property(key = "companyName", value = "#companyCreateDto.name"),
             @LoggingEvent.Property(key = "property2", value = "'value2'")
@@ -41,6 +40,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
+    @LoggingEvent("company-update")
     public CompanyOutputDto updateCompany(UUID companyId, CompanyUpdateDto companyCreateDto) {
         Company company = companyRepository.findOne(companyId);
         Assert.notNull(company);
