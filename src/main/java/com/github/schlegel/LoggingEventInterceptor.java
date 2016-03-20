@@ -1,13 +1,14 @@
 package com.github.schlegel;
 
-import com.mixpanel.mixpanelapi.ClientDelivery;
-import com.mixpanel.mixpanelapi.MessageBuilder;
-import com.mixpanel.mixpanelapi.MixpanelAPI;
+import com.segment.analytics.Analytics;
+import com.segment.analytics.Callback;
+import com.segment.analytics.Log;
+import com.segment.analytics.messages.Message;
+import com.segment.analytics.messages.TrackMessage;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.json.JSONObject;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.context.expression.AnnotatedElementKey;
 import org.springframework.context.expression.CachedExpressionEvaluator;
@@ -21,6 +22,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -29,42 +32,81 @@ import java.util.concurrent.ConcurrentHashMap;
 public class LoggingEventInterceptor {
 
     private ExpressionEvaluator<String> evaluator = new ExpressionEvaluator<>();
-    private MessageBuilder messageBuilder = new MessageBuilder("TOKEN");
+
+    static final Log STDOUT = new Log() {
+        @Override public void print(Level level, String format, Object... args) {
+            System.out.println(new Date().toString() + "\t" + level + ":\t" + String.format(format, args));
+        }
+
+        @Override public void print(Level level, Throwable error, String format, Object... args) {
+            System.out.println(new Date().toString() + "\t" +  level + ":\t" + String.format(format, args));
+            System.out.println(error);
+        }
+    };
+
+    static final Callback CALLBACK = new Callback() {
+        @Override public void success(Message message) {
+            System.out.println("Uploaded " + message);
+        }
+
+        @Override public void failure(Message message, Throwable throwable) {
+            System.out.println("Could not upload " + message);
+            System.out.println(throwable);
+        }
+    };
 
 
-    //@After("execution(@com.github.schlegel.LoggingEvent * *(..)) && @annotation(loggingEvent)")
-    //@After("execution(* *.*(..)) && @annotation(loggingEvent)")
     @AfterReturning("@annotation(loggingEvent)")
     public void after(JoinPoint joinPoint, LoggingEvent loggingEvent) throws InterruptedException, IOException {
 
+        // Get information
         String event = loggingEvent.value();
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        String company = "ACME Company";
         String clientid = String.valueOf(userName.hashCode());
 
-        // Gather together a bunch of messages into a single ClientDelivery. This can happen in a separate thread or process from the call to MessageBuilder.event()
-        ClientDelivery delivery = new ClientDelivery();
 
-        for (int i = 0; i < 10; i++) {
-            // You can send properties along with events
-            LoggingEvent.Property[] properties = loggingEvent.properties();
-            JSONObject props = new JSONObject();
-            for (LoggingEvent.Property property : properties) {
-                String key = property.key();
-                String value = getValue(joinPoint, property.value());
-                props.put(key, value);
-            }
+        Analytics analytics = Analytics.builder("xL7gIljlx2oNXU58Y8x5v98fkgZHdjH1")
+                .log(STDOUT)
+                .callback(CALLBACK)
+                .build();
 
-            // Create an event
-            JSONObject sentEvent = messageBuilder.event(clientid, event, props);
-            delivery.addMessage(sentEvent);
+        // set id of user
+//        Map<String, String> idProps = new HashMap<>();
+//        idProps.put("name", userName);
+//        idProps.put("company", company);
+//
+//        analytics.enqueue(IdentifyMessage.builder()
+//                .userId(clientid)
+//                .traits(idProps)
+//        );
+
+
+        // sent event
+        Map<String, String> eventProps = new HashMap<>();
+        for (LoggingEvent.Property property : loggingEvent.properties()) {
+            String key = property.key();
+            String value = getValue(joinPoint, property.value());
+            eventProps.put(key, value);
         }
 
-        // TODO async delivery
+        for (int i = 0; i < 50; i++) {
+            analytics.enqueue(TrackMessage.builder(event)
+                    .userId(clientid)
+                    .properties(eventProps)
+            );
+        }
 
-        // Use an instance of MixpanelAPI to send the messages to Mixpanel's servers.
-        MixpanelAPI mixpanel = new MixpanelAPI();
-        mixpanel.deliver(delivery);
+
+        analytics.flush();
+        // wait for flush message to trigger flushing
+        Thread.sleep(1000);
+        analytics.shutdown();
+
+
+        // TODO async delivery
     }
+
 
 
     private String getValue(JoinPoint joinPoint, String condition) {

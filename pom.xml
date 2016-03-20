@@ -106,9 +106,9 @@
             <version>2.6</version>
         </dependency>
         <dependency>
-            <groupId>com.mixpanel</groupId>
-            <artifactId>mixpanel-java</artifactId>
-            <version>1.4.2</version>
+            <groupId>com.segment.analytics.java</groupId>
+            <artifactId>analytics</artifactId>
+            <version>LATEST</version>
         </dependency>
     </dependencies>
 
