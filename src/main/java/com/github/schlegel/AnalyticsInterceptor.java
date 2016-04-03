@@ -48,6 +48,11 @@ public class AnalyticsInterceptor {
         String event = analyticsEvent.value();
         Map<String, String> eventProps = new HashMap<>();
 
+        // special properties for google analytics
+        eventProps.put("category", "server-event");
+        eventProps.put("label", company);
+
+        // get property annotations
         for (AnalyticsEvent.Property property : analyticsEvent.properties()) {
             String key = property.key();
             String value = getValue(joinPoint, property.value());

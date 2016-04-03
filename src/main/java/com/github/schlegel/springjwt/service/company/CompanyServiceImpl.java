@@ -28,7 +28,7 @@ public class CompanyServiceImpl implements CompanyService {
     private UserRepository userRepository;
 
     @Override
-    @AnalyticsEvent(value = "company-create", properties = {
+    @AnalyticsEvent(value = "company-create-server", properties = {
             @AnalyticsEvent.Property(key = "companyName", value = "#companyCreateDto.name"),
             @AnalyticsEvent.Property(key = "revenue", value = "'3000'"),
             @AnalyticsEvent.Property(key = "currency", value = "'EUR'"),
@@ -44,7 +44,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    @AnalyticsEvent("company-update")
+    @AnalyticsEvent("company-update-server")
     public CompanyOutputDto updateCompany(UUID companyId, CompanyUpdateDto companyCreateDto) {
         Company company = companyRepository.findOne(companyId);
         Assert.notNull(company);
