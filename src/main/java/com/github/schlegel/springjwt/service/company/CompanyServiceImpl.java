@@ -1,6 +1,6 @@
 package com.github.schlegel.springjwt.service.company;
 
-import com.github.schlegel.LoggingEvent;
+import com.github.schlegel.AnalyticsEvent;
 import com.github.schlegel.springjwt.domain.company.Company;
 import com.github.schlegel.springjwt.domain.company.CompanyRepository;
 import com.github.schlegel.springjwt.domain.user.User;
@@ -28,9 +28,13 @@ public class CompanyServiceImpl implements CompanyService {
     private UserRepository userRepository;
 
     @Override
-    @LoggingEvent(value = "company-create", properties = {
-            @LoggingEvent.Property(key = "companyName", value = "#companyCreateDto.name"),
-            @LoggingEvent.Property(key = "property2", value = "'value2'")
+    @AnalyticsEvent(value = "company-create", properties = {
+            @AnalyticsEvent.Property(key = "companyName", value = "#companyCreateDto.name"),
+            @AnalyticsEvent.Property(key = "revenue", value = "'3000'"),
+            @AnalyticsEvent.Property(key = "currency", value = "'EUR'"),
+            @AnalyticsEvent.Property(key = "value", value = "'500'"),
+            @AnalyticsEvent.Property(key = "quantity", value = "'100'"),
+            @AnalyticsEvent.Property(key = "property2", value = "'value2'")
     })
     public CompanyOutputDto createCompany(CompanyCreateDto companyCreateDto) {
         Company company = companyDtoMapper.companyInputDtoToCompany(companyCreateDto);
@@ -40,7 +44,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    @LoggingEvent("company-update")
+    @AnalyticsEvent("company-update")
     public CompanyOutputDto updateCompany(UUID companyId, CompanyUpdateDto companyCreateDto) {
         Company company = companyRepository.findOne(companyId);
         Assert.notNull(company);

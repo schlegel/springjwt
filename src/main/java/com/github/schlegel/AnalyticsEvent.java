@@ -6,7 +6,7 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 @Inherited
 @Documented
-public @interface LoggingEvent {
+public @interface AnalyticsEvent {
     String value();
     Property[] properties() default {};
 

@@ -17,37 +17,38 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Aspect
 @Component
-public class LoggingEventInterceptor {
+public class AnalyticsInterceptor {
 
     private ExpressionEvaluator<String> evaluator = new ExpressionEvaluator<>();
 
     @Autowired
     private AnalyticsService analyticsService;
 
-    @AfterReturning("@annotation(loggingEvent)")
-    public void after(JoinPoint joinPoint, LoggingEvent loggingEvent) throws InterruptedException, IOException {
+    @AfterReturning("@annotation(analyticsEvent)")
+    public void after(JoinPoint joinPoint, AnalyticsEvent analyticsEvent) throws InterruptedException, IOException {
+
+        // todo events at register, login
 
         // Get client information
         String company = "ACME Company";
         String companyId = "" + company.hashCode();
         String clientid = "2344";
         String email = "newuser@enmacc.de";
-        String createdDate = new Date().toString();
+        String createdDate = "2016-02-10 21:08";
         // String.valueOf(SecurityContextHolder.getContext().getAuthentication().getName().hashCode());
 
 
         // sent event with properties
-        String event = loggingEvent.value();
+        String event = analyticsEvent.value();
         Map<String, String> eventProps = new HashMap<>();
 
-        for (LoggingEvent.Property property : loggingEvent.properties()) {
+        for (AnalyticsEvent.Property property : analyticsEvent.properties()) {
             String key = property.key();
             String value = getValue(joinPoint, property.value());
             eventProps.put(key, value);
@@ -61,7 +62,7 @@ public class LoggingEventInterceptor {
         idProps.put("Company Name", company);
         idProps.put("Company ID", companyId);
         idProps.put("Email", email);
-        idProps.put("Created", createdDate);
+        idProps.put("Created_At", createdDate);
 
         analyticsService.sendIdentification(clientid, idProps);
     }
